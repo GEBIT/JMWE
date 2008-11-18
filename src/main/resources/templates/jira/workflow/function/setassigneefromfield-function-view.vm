@@ -1,0 +1,5 @@
+The Assignee will take the value from 
+#if(${selectedField})
+    <b>${selectedField.name}</b>
+#end
+. DEPRECATED: use Copy Value From Other Field function (Jira Suite Utilities plugin v. 0.6.3+)

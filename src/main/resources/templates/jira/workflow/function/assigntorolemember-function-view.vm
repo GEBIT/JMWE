@@ -1,0 +1,5 @@
+#if (${projectrolename})
+Assign the issue to the default user from the <b>${projectrolename}</b> role.
+#else
+$i18n.getText("admin.workflow.condition.isuserinprojectrole.view.missing","$projectrole")
+#end

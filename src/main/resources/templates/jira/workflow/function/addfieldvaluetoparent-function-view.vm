@@ -1,0 +1,5 @@
+The value(s) of field 
+#if(${selectedField})
+    <b>${selectedField.name}</b>
+#end
+ will be added to the issue's parent's field.

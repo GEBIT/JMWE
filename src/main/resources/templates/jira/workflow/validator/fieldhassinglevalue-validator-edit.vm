@@ -1,0 +1,22 @@
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">Field:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+		<select id="field" name="field">
+	    	#foreach ($val in $fieldList)
+	        	<option value="${val.id}"
+	                #if(${val.id.equals($FHSVselectedField.id)})
+	                    SELECTED
+	                #end
+                >${val.name}</option>
+	        #end
+        </select>&nbsp;&nbsp;&nbsp;
+        <input type="checkbox" id="excludingSubtasks" name="excludingSubtasks" value="yes" 
+        #if ($excludingSubtasks=='yes')
+        checked="yes"
+        #end
+        >Excluding values copied from sub-tasks</input>
+        <br><font size="1">Choose the field that should not have more than one value.</font>
+    </td>
+</tr>

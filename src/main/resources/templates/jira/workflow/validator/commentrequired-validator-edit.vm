@@ -1,0 +1,13 @@
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">Error message:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+    	#if ($errorMessage)
+			<input type="text" size="80" id="errorMessage" name="errorMessage" value="$errorMessage" />
+		#else
+			<input type="text" size="80" id="errorMessage" name="errorMessage" value="" />
+		#end
+        <br><font size="1">Input the error message to display if the user does not provide a Comment during the transition.</font>
+    </td>
+</tr>

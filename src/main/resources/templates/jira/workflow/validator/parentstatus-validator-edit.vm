@@ -1,0 +1,17 @@
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">Status of parent issue:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+		<select multiple size="10" id="status" name="status">
+	    	#foreach ($val in $statusList)
+	        	<option value="${val.name}"
+	                #if($selectedStatuses.contains($val.name))
+	                    SELECTED
+	                #end
+                >${val.name}</option>
+	        #end
+	        </select>
+        <br><font size="1">Choose the status(es) the issue's parent must be in.</font>
+    </td>
+</tr>

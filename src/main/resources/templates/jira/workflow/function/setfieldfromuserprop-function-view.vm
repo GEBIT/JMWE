@@ -1,0 +1,3 @@
+The value of field #if(${selectedField})
+    <b>${selectedField.name}</b>
+#end will be set to the value of the user's <b>$userPropKey</b> property.

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<parent>
+		<groupId>com.atlassian.jira.plugins</groupId>
+		<artifactId>jira-plugin-base</artifactId>
+		<version>5</version>
+	</parent>
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.innovalog.jmwe</groupId>
+	<artifactId>plugin-jar</artifactId>
+	<name>JIRA Misc Workflow Extensions</name>
+	<version>1.0</version>
+	<packaging>jar</packaging>
+
+	<scm>
+		<connection>scm:svn:http://svn.atlassian.com/svn/public/contrib/jira/jira-misc-workflow-extensions/trunk/</connection>
+		<developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-misc-workflow-extensions/trunk/</developerConnection>
+	</scm>
+
+
+	<properties>
+		<atlassian.plugin.key>
+			com.innovalog.jmwe.plugins
+		</atlassian.plugin.key>
+		<!--
+			Change this property to compile your plugin against different JIRA
+			versions.
+		-->
+		<jira.version>3.13</jira.version>
+	</properties>
+
+	<description>Several JIRA workflow extensions</description>
+	<url></url>
+
+	<developers>
+		<developer>
+			<name>David Fischer</name>
+			<organization>Innovalog</organization>
+		</developer>
+	</developers>
+
+	<organization>
+		<name>Innovalog</name>
+		<url>www.innovalog.com</url>
+	</organization>
+
+	<inceptionYear>2008</inceptionYear>
+
+	<build>
+		<resources>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>atlassian-plugin.xml</include>
+				</includes>
+			</resource>
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>false</filtering>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<excludes>
+					<exclude>atlassian-plugin.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<!--
+			The following plugin definitions are required to invoke functions
+			that build run-time environment for running integration tests against
+			JIRA
+		-->
+		<plugins>
+			<plugin>
+				<artifactId>maven-dependency-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<!--
+					This makes sure that the plugin is compiled to be compatible with
+					Java 1.5
+				-->
+				<configuration>
+					<source>1.5</source>
+					<target>1.5</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<profile>
+			<id>plugin-debug</id>
+			<build>
+				<defaultGoal>verify</defaultGoal>
+			</build>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<properties>
+				<http.port>8080</http.port>
+				<rmi.port>9001</rmi.port>
+				<maven.test.skip>true</maven.test.skip>
+				<cargo.wait>true</cargo.wait>
+				<jvmargs>
+					-Xms128m -Xmx256m -Xdebug -Xnoagent
+					-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n
+				</jvmargs>
+				<jira.config.directory>
+					plugin-debug
+				</jira.config.directory>
+				<unpack.jira.config.overwrite>
+					false
+				</unpack.jira.config.overwrite>
+			</properties>
+		</profile>
+	</profiles>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<!--
+		<distributionManagement> <repository> <id>atlassian-contrib</id>
+		<name>Atlassian repository of contributed code</name>
+		<url>dav:https://maven.atlassian.com/contrib</url> </repository>
+		<snapshotRepository> <id>atlassian-contrib-snapshot</id>
+		<name>Atlassian repository of contributed code snapshots</name>
+		<url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+		</snapshotRepository> </distributionManagement>
+	-->
+</project>

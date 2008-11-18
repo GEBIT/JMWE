@@ -1,0 +1,5 @@
+#if ($mostRecentOnly=='yes')
+The Issue's previous Status (immediately before the current Status) must be <b>$selectedStatus</b>.
+#else
+The Issue must have been in Status <b>$selectedStatus</b> at some point before its current Status.
+#end

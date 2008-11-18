@@ -1,0 +1,8 @@
+Multi-select field 
+#if(${FHSVselectedField})
+    <b>${FHSVselectedField.name}</b>
+#end
+ should not have more than one value
+#if ($excludingSubtasks=='yes')
+ (excluding values copied from sub-tasks)
+#end

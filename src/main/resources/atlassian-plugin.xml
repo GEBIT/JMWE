@@ -1,0 +1,239 @@
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	name="${project.name}">
+	<plugin-info>
+		<description>${project.description}</description>
+		<version>${project.version}</version>
+		<application-version min="3.13" max="3.13" />
+		<vendor name="Innovalog"
+			url="http://www.innovalog.com" />
+	</plugin-info>
+
+	<!-- Custom Fields -->
+
+	<!-- Searches -->
+
+	<!-- Conditions -->
+	<workflow-condition key="previousstatus-condition"
+		name="Previous Status Condition"
+		class="com.innovalog.jmwe.plugins.conditions.WorkflowPreviousStatusCondition">
+		<description>
+			Condition on the previous status of an Issue.
+		</description>
+
+		<condition-class>
+			com.innovalog.jmwe.plugins.conditions.PreviousStatusCondition
+		</condition-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/condition/previousstatus-condition-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/condition/previousstatus-condition-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/condition/previousstatus-condition-edit.vm" />
+	</workflow-condition>
+
+	<!-- Validators -->
+	<workflow-validator key="fieldhassinglevalue-validator"
+		name="Field has single value Validator"
+		class="com.innovalog.jmwe.plugins.validators.WorkflowFieldHasSingleValueValidator">
+		<description>
+			Multi-select Field has not more than one value during transition.
+		</description>
+
+		<validator-class>
+			com.innovalog.jmwe.plugins.validators.FieldHasSingleValueValidator
+		</validator-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/validator/fieldhassinglevalue-validator-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/validator/fieldhassinglevalue-validator-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/validator/fieldhassinglevalue-validator-edit.vm" />
+	</workflow-validator>
+
+	<workflow-validator key="previousstatus-validator"
+		name="Previous Status Validator"
+		class="com.innovalog.jmwe.plugins.validators.WorkflowPreviousStatusValidator">
+		<description>
+			Issue must have been through a specific status somtime
+			before the transition.
+		</description>
+
+		<validator-class>
+			com.innovalog.jmwe.plugins.validators.PreviousStatusValidator
+		</validator-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/validator/previousstatus-validator-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/validator/previousstatus-validator-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/validator/previousstatus-validator-edit.vm" />
+	</workflow-validator>
+
+	<workflow-validator key="parentstatus-validator"
+		name="Parent Status Validator"
+		class="com.innovalog.jmwe.plugins.validators.WorkflowParentStatusValidator">
+		<description>
+			Issue's parent issue must be in specified status.
+		</description>
+
+		<validator-class>
+			com.innovalog.jmwe.plugins.validators.ParentStatusValidator
+		</validator-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/validator/parentstatus-validator-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/validator/parentstatus-validator-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/validator/parentstatus-validator-edit.vm" />
+	</workflow-validator>
+
+	<workflow-validator key="commentrequired-validator"
+		name="Comment Required Validator"
+		class="com.innovalog.jmwe.plugins.validators.WorkflowCommentRequiredValidator">
+		<description>
+			A Comment must be provided during the transition.
+		</description>
+
+		<validator-class>
+			com.innovalog.jmwe.plugins.validators.CommentRequiredValidator
+		</validator-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/validator/commentrequired-validator-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/validator/commentrequired-validator-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/validator/commentrequired-validator-edit.vm" />
+	</workflow-validator>
+
+
+	<!-- Functions -->
+	<workflow-function key="IncreaseFieldValue-function"
+		name="Increase value of field"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowIncreaseFieldValueFunction">
+		<description>
+			The value of the field will be increased by 1 unit.
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.IncreaseFieldValueFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/increasefieldvalue-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/increasefieldvalue-function-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/increasefieldvalue-function-edit.vm" />
+	</workflow-function>
+
+	<workflow-function key="SetFieldFromUserProp-function"
+		name="Set field value from User Property value"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowSetFieldFromUserPropFunction">
+		<description>
+			The selected field's value will be set to the value of a
+			Property of the current User.
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.SetFieldFromUserPropFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/setfieldfromuserprop-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/setfieldfromuserprop-function-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/setfieldfromuserprop-function-edit.vm" />
+	</workflow-function>
+
+	<workflow-function key="AddFieldValueToParent-function"
+		name="Add Field Value to Parent"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowAddFieldValueToParentFunction">
+		<description>
+			Add the value(s) of a multi-select field to the issue's
+			parent's field
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.AddFieldValueToParentFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/addfieldvaluetoparent-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/addfieldvaluetoparent-function-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/addfieldvaluetoparent-function-edit.vm" />
+	</workflow-function>
+
+	<!-- From AssignToRoleMember Plugin -->
+	<workflow-function key="assigntorolemember-function"
+		name="Assign to role member"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToRoleMemberFunctionImpl">
+		<description>Assigns the issue to a role member.</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.AssignToRoleMemberFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>true</unique>
+		<deletable>true</deletable>
+		<default>false</default>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/assigntorolemember-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/assigntorolemember-function-edit-params.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/assigntorolemember-function-edit-params.vm" />
+	</workflow-function>
+
+	<workflow-function key="assigntolastrolemember-function"
+		name="Assign to last role member"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToLastRoleMemberFunctionImpl">
+		<description>
+			Assigns the issue to the last user from the specified role
+			that had this issue assigned before.
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.AssignToLastRoleMemberFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>true</unique>
+		<deletable>true</deletable>
+		<default>false</default>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/assigntolastrolemember-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/assigntolastrolemember-function-edit-params.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/assigntolastrolemember-function-edit-params.vm" />
+	</workflow-function>
+
+	<!-- Reports -->
+
+	<!-- Portlets -->
+
+	<!-- Issue Panels -->
+</atlassian-plugin>
