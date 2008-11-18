@@ -11,7 +11,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.innovalog.jmwe</groupId>
-	<artifactId>plugin-jar</artifactId>
+	<artifactId>jira-misc-workflow-extensions</artifactId>
 	<name>JIRA Misc Workflow Extensions</name>
 	<version>1.0</version>
 	<packaging>jar</packaging>
@@ -138,13 +138,16 @@
 		</dependency>
 	</dependencies>
 
-	<!--
-		<distributionManagement> <repository> <id>atlassian-contrib</id>
-		<name>Atlassian repository of contributed code</name>
-		<url>dav:https://maven.atlassian.com/contrib</url> </repository>
-		<snapshotRepository> <id>atlassian-contrib-snapshot</id>
-		<name>Atlassian repository of contributed code snapshots</name>
-		<url>dav:https://maven.atlassian.com/contrib-snapshot</url>
-		</snapshotRepository> </distributionManagement>
-	-->
+	<distributionManagement>
+		<repository>
+			<id>atlassian-contrib</id>
+			<name>Atlassian repository of contributed code</name>
+			<url>dav:https://maven.atlassian.com/contrib</url>
+		</repository>
+		<snapshotRepository>
+			<id>atlassian-contrib-snapshot</id>
+			<name>Atlassian repository of contributed code snapshots</name>
+			<url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
 </project>
