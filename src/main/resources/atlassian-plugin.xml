@@ -184,7 +184,8 @@
 	</workflow-function>
 
 	<!-- From AssignToRoleMember Plugin -->
-	<workflow-function key="assigntorolemember-function"
+	<!-- 
+	<workflow-function key="assigntorolemember"
 		name="Assign to role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToRoleMemberFunctionImpl">
 		<description>Assigns the issue to a role member.</description>
@@ -206,7 +207,7 @@
 			location="templates/jira/workflow/function/assigntorolemember-function-edit-params.vm" />
 	</workflow-function>
 
-	<workflow-function key="assigntolastrolemember-function"
+	<workflow-function key="assigntolastrolemember"
 		name="Assign to last role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToLastRoleMemberFunctionImpl">
 		<description>
@@ -230,7 +231,7 @@
 		<resource type="velocity" name="edit-parameters"
 			location="templates/jira/workflow/function/assigntolastrolemember-function-edit-params.vm" />
 	</workflow-function>
-
+	-->
 	<!-- Reports -->
 
 	<!-- Portlets -->
