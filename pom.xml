@@ -116,8 +116,7 @@
 				<maven.test.skip>true</maven.test.skip>
 				<cargo.wait>true</cargo.wait>
 				<jvmargs>
-					-Xms128m -Xmx256m -Xdebug -Xnoagent
-					-Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n
+					<![CDATA[-Xms128m -Xmx256m -Xdebug -Xnoagent -Xrunjdwp:server=y,transport=dt_socket,address=5005,suspend=n]]>
 				</jvmargs>
 				<jira.config.directory>
 					plugin-debug
