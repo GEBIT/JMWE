@@ -32,6 +32,25 @@
 			location="templates/jira/workflow/condition/previousstatus-condition-edit.vm" />
 	</workflow-condition>
 
+	<workflow-condition key="separationofduties-condition"
+		name="Separation of Duties Condition"
+		class="com.innovalog.jmwe.plugins.conditions.WorkflowSeparationOfDutiesCondition">
+		<description>
+			Condition to prevent a user to perform a transition when he has already performed another.
+		</description>
+
+		<condition-class>
+			com.innovalog.jmwe.plugins.conditions.SeparationOfDutiesCondition
+		</condition-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/condition/separationofduties-condition-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/condition/separationofduties-condition-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/condition/separationofduties-condition-edit.vm" />
+	</workflow-condition>
+
 	<!-- Validators -->
 	<workflow-validator key="fieldhassinglevalue-validator"
 		name="Field has single value Validator"

@@ -1,0 +1,43 @@
+<tr>
+<td class="jiraformheader" colspan="2">
+Select the originating and destination statuses of the transition that the user must <b>not</b> have triggered on the issue.
+</tr>
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">From Status:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+		<select id="fromStatus" name="fromStatus">
+			<option value=""
+                #if(${fromStatus.equals("")})
+                    SELECTED
+                #end
+            ><i>Any</i></option>
+	    	#foreach ($val in $statusList)
+	        	<option value="${val.name}"
+	                #if(${val.name.equals($fromStatus)})
+	                    SELECTED
+	                #end
+                >${val.name}</option>
+	        #end
+	    </select>
+        <br><font size="1">Choose the originating status of the transition.</font>
+    </td>
+</tr>
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">To Status:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+		<select id="toStatus" name="toStatus">
+	    	#foreach ($val in $statusList)
+	        	<option value="${val.name}"
+	                #if(${val.name.equals($toStatus)})
+	                    SELECTED
+	                #end
+                >${val.name}</option>
+	        #end
+	    </select>
+        <br><font size="1">Choose the destination status of the transition.</font>
+    </td>
+</tr>

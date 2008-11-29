@@ -6,10 +6,15 @@ package com.innovalog.jmwe.plugins.conditions;
 import java.util.HashMap;
 import java.util.Map;
 
+import webwork.action.ActionContext;
+import webwork.action.factory.ParameterMap;
+
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginConditionFactory;
+import com.atlassian.jira.workflow.JiraWorkflow;
+import com.atlassian.jira.workflow.WorkflowManager;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ConditionDescriptor;
 
@@ -37,9 +42,15 @@ public class WorkflowPreviousStatusCondition extends
 	protected void getVelocityParamsForInput(Map velocityParams) {
 		//fill in velocity parameters needed for possible values (combobox for instance)
 		
+		//get current workflow
+		ActionContext ctx = ActionContext.getContext();
+		ParameterMap pm = (ParameterMap)ctx.get("webwork.action.ActionContext.parameters");
+		String workflowName = ((String[])pm.get("workflowName"))[0];
+		WorkflowManager wm = ComponentManager.getInstance().getWorkflowManager();
+		JiraWorkflow workflow = wm.getWorkflow(workflowName);
+		
 		//get list of statuses
-		ConstantsManager constantsManager = ComponentManager.getInstance().getConstantsManager();
-        velocityParams.put("statusList", constantsManager.getStatusObjects());
+       velocityParams.put("statusList", workflow.getLinkedStatusObjects());
 	}
 
 	/* (non-Javadoc)

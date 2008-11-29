@@ -1,0 +1,5 @@
+#if (${fromStatus.equals("")})
+Only a user who has never transitioned the issue to <b>$toStatus</b> can execute this transition.
+#else
+Only a user who has never transitioned the issue from <b>$fromStatus</b> to <b>$toStatus</b> can execute this transition.
+#end

@@ -13,7 +13,7 @@
 	<groupId>com.innovalog.jmwe</groupId>
 	<artifactId>jira-misc-workflow-extensions</artifactId>
 	<name>JIRA Misc Workflow Extensions</name>
-	<version>1.0</version>
+	<version>1.1</version>
 	<packaging>jar</packaging>
 
 	<scm>
@@ -40,6 +40,9 @@
 		<developer>
 			<name>David Fischer</name>
 			<organization>Innovalog</organization>
+		</developer>
+		<developer>
+			<name>Alexey Abashev</name>
 		</developer>
 	</developers>
 
