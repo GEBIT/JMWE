@@ -203,7 +203,6 @@
 	</workflow-function>
 
 	<!-- From AssignToRoleMember Plugin -->
-	<!-- 
 	<workflow-function key="assigntorolemember"
 		name="Assign to role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToRoleMemberFunctionImpl">
@@ -250,7 +249,7 @@
 		<resource type="velocity" name="edit-parameters"
 			location="templates/jira/workflow/function/assigntolastrolemember-function-edit-params.vm" />
 	</workflow-function>
-	-->
+
 	<!-- Reports -->
 
 	<!-- Portlets -->
