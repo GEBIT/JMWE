@@ -12,6 +12,6 @@
                 >${val.name}</option>
 	        #end
 	        </select>
-        <br><font size="1">Choose the field.</font>
+        <br><font size="1">Choose a field.<br>Note: only multi-valued fields should be used with this function.</font>
     </td>
 </tr>
