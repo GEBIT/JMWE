@@ -46,16 +46,11 @@ public class SetFieldFromUserPropFunction extends
 		Field fieldFrom = (Field) WorkflowUtils.getFieldFromKey(sourceFieldKey);
 		if (fieldFrom == null) {
 			log.warn(String.format("Unable to find field with key [%s]", sourceFieldKey));
-			return;
+			throw new WorkflowException(String.format("Unable to find field with key [%s]", sourceFieldKey));
 		}
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			User user = UserManager.getInstance().getUser(value);
-			if (user == null) {
-				log.warn(String.format("Unable to find user [%s]", value));
-				return;
-			}
 			WorkflowUtils.setFieldValue(issue, fieldFrom, value);
 			issue.store();
 
@@ -63,8 +58,8 @@ public class SetFieldFromUserPropFunction extends
 				log.debug(String.format("Set field %s to [%s]", sourceFieldKey, value));
 			}
 		} catch (Exception e) {
-			final String message = "Unable to copy value from " + sourcePropKey
-					+ " to field" + sourceFieldKey;
+			final String message = "Unable to copy value from user property " + sourcePropKey
+					+ " to field " + sourceFieldKey;
 
 			log.error(message, e);
 

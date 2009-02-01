@@ -303,6 +303,12 @@ public class WorkflowUtils {
 		if (fldManager.isCustomField(field)) {
 			CustomField customField = (CustomField) field;
 			Object oldValue = issue.getCustomFieldValue(customField);
+			
+			if (value instanceof String)
+			{
+				//convert from string to object
+				value = customField.getCustomFieldType().getSingularObjectFromString((String)value);
+			}
 
 			try {
 				FieldLayoutItem fieldLayoutItem = CommonPluginUtils.getFieldLayoutItem(issue, field);
