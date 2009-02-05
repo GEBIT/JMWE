@@ -24,6 +24,9 @@ import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.IssueRelationConstants;
 import com.atlassian.jira.issue.ModifiedValue;
 import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.issue.customfields.CustomFieldType;
+import com.atlassian.jira.issue.customfields.view.CustomFieldParams;
+import com.atlassian.jira.issue.customfields.view.CustomFieldParamsImpl;
 import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.issue.fields.FieldManager;
@@ -306,8 +309,10 @@ public class WorkflowUtils {
 			
 			if (value instanceof String)
 			{
-				//convert from string to object
-				value = customField.getCustomFieldType().getSingularObjectFromString((String)value);
+				//convert from string to Object
+				CustomFieldType cfType = customField.getCustomFieldType();
+				CustomFieldParams fieldParams = new CustomFieldParamsImpl(customField,value);
+				value = cfType.getValueFromCustomFieldParams(fieldParams);
 			}
 
 			try {
