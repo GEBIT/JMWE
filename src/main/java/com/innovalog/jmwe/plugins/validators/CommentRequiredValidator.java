@@ -30,6 +30,23 @@ public class CommentRequiredValidator extends GenericValidator {
 	 */
 	@Override
 	protected void validate() throws InvalidInputException, WorkflowException {
+		//JMWE-10
+		//check whether we were invoked through the SOAP API call progressWorkflowAction.
+		//If so, skip validation because comments cannot be passed this way
+		//NOTA: this is an ugly hack but for now it'll have to do!
+		try
+		{
+			throw new Exception();
+		}
+		catch(Exception e)
+		{
+			StackTraceElement[] stack = e.getStackTrace();
+			for (StackTraceElement entry : stack)
+			{
+				if (entry.getClassName().equals("com.atlassian.jira.rpc.soap.JiraSoapServiceImpl") && entry.getMethodName().equals("progressWorkflowAction"))
+					return;
+			}
+		}
         if (!TextUtils.stringSet(strComment))
         {
         	//find Comment field

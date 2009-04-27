@@ -125,7 +125,7 @@ public class AssignToLastRoleMemberFunction implements FunctionProvider
         		}
         		//if we have a real user and it is a member of the specified role
         		if (user != null && users.contains(user)) {
-        			log.warn("AssignToLastRoleMember assigning " + genericIssue.getKey() + " to: " + user.getFullName());
+        			log.info("AssignToLastRoleMember assigning " + genericIssue.getKey() + " to: " + user.getFullName());
         			
         			// Assign the issue
         	        MutableIssue issue = (MutableIssue) transientVars.get("issue");        

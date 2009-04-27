@@ -13,17 +13,18 @@ import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.action.ActionNames;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
+import com.atlassian.jira.issue.util.DefaultIssueChangeHolder;
+import com.atlassian.jira.issue.util.IssueChangeHolder;
 import com.atlassian.jira.util.ImportUtils;
-import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 
-public class AddFieldValueToParentFunction extends AbstractJiraFunctionProvider {
+public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFunction {
 	private Logger log = Logger.getLogger(AddFieldValueToParentFunction.class);
 	private static final String FIELD = "field";
 
-	public void execute(Map transientVars, Map args, PropertySet ps)
+	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
 			throws WorkflowException {
 		String fieldKey = (String) args.get(FIELD);
 		Field field = (Field) WorkflowUtils.getFieldFromKey(fieldKey);
@@ -53,7 +54,7 @@ public class AddFieldValueToParentFunction extends AbstractJiraFunctionProvider 
 						if (!indexingPreviouslyEnabled)
 							ImportUtils.setIndexIssues(true);
 						((Collection)parentValue).addAll((Collection)sourceValue);
-						WorkflowUtils.setFieldValue(parentIssue, field, parentValue);
+						WorkflowUtils.setFieldValue(parentIssue, field, parentValue, new DefaultIssueChangeHolder());
 						
 						//trigger an edit on the issue
 						Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue, "remoteUser", this.getCaller(transientVars, args));

@@ -6,23 +6,21 @@ import org.apache.log4j.Logger;
 
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
-import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
+import com.atlassian.jira.issue.util.IssueChangeHolder;
 import com.innovalog.googlecode.jsu.util.LogUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.user.User;
-import com.opensymphony.user.UserManager;
 import com.opensymphony.workflow.WorkflowException;
 
 /**
  * 
  */
-public class SetFieldFromUserPropFunction extends
-		AbstractJiraFunctionProvider {
+public class SetFieldFromUserPropFunction extends AbstractPreserveChangesPostFunction {
 	private final Logger log = LogUtils.getGeneral();
 
 	@SuppressWarnings("unchecked")
-	public void execute(Map transientVars, Map args, PropertySet ps)
+	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
 			throws WorkflowException {
 		log.debug("");
 		String sourcePropKey = (String) args
@@ -51,7 +49,7 @@ public class SetFieldFromUserPropFunction extends
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			WorkflowUtils.setFieldValue(issue, fieldFrom, value);
+			WorkflowUtils.setFieldValue(issue, fieldFrom, value, holder);
 			issue.store();
 
 			if (log.isDebugEnabled()) {

@@ -6,16 +6,16 @@ import org.apache.log4j.Logger;
 
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
-import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
+import com.atlassian.jira.issue.util.IssueChangeHolder;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 
-public class IncreaseFieldValueFunction extends AbstractJiraFunctionProvider {
+public class IncreaseFieldValueFunction extends AbstractPreserveChangesPostFunction {
 	private Logger log = Logger.getLogger(IncreaseFieldValueFunction.class);
 	private static final String FIELD = "field";
 
-	public void execute(Map transientVars, Map args, PropertySet ps)
+	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
 			throws WorkflowException {
 		String fieldKey = (String) args.get(FIELD);
 		Field field = (Field) WorkflowUtils.getFieldFromKey(fieldKey);
@@ -33,12 +33,12 @@ public class IncreaseFieldValueFunction extends AbstractJiraFunctionProvider {
 				if (sourceValue instanceof Double) {
 					Double sourceValueDbl = (Double)sourceValue;
 					Double newValueDbl = new Double(sourceValueDbl + 1);
-					WorkflowUtils.setFieldValue(issue, field, newValueDbl);
+					WorkflowUtils.setFieldValue(issue, field, newValueDbl, holder);
 				}
 			} else {
 				log.debug("Field value = null");
 				Double newValueDbl = new Double(1);
-				WorkflowUtils.setFieldValue(issue, field, newValueDbl);
+				WorkflowUtils.setFieldValue(issue, field, newValueDbl, holder);
 			}
 		} catch (Exception e) {
 			log.warn("Error while executing function : "+e, e);

@@ -71,6 +71,25 @@
 			location="templates/jira/workflow/validator/fieldhassinglevalue-validator-edit.vm" />
 	</workflow-validator>
 
+	<workflow-validator key="fieldchanged-validator"
+		name="Field has been modified Validator"
+		class="com.innovalog.jmwe.plugins.validators.WorkflowFieldChangedValidator">
+		<description>
+			Field value must be changed during the transition.
+		</description>
+
+		<validator-class>
+			com.innovalog.jmwe.plugins.validators.FieldChangedValidator
+		</validator-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/validator/fieldchanged-validator-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/validator/fieldchanged-validator-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/validator/fieldchanged-validator-edit.vm" />
+	</workflow-validator>
+
 	<workflow-validator key="previousstatus-validator"
 		name="Previous Status Validator"
 		class="com.innovalog.jmwe.plugins.validators.WorkflowPreviousStatusValidator">

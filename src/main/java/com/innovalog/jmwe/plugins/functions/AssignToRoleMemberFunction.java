@@ -111,7 +111,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
         }
 		
 		// Assign the issue
-		log.warn("AssignToRoleMember assigning to: " + assignToUser.getFullName());
+		log.info("AssignToRoleMember assigning to: " + assignToUser.getFullName());
         MutableIssue issue = (MutableIssue) transientVars.get("issue");        
         issue.setAssignee(assignToUser);
         issue.store();
