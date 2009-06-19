@@ -3,14 +3,23 @@
  */
 package com.innovalog.jmwe.plugins.validators;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 import com.atlassian.jira.ManagerFactory;
 import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.workflow.WorkflowTransitionUtil;
 import com.innovalog.googlecode.jsu.annotation.Argument;
 import com.innovalog.googlecode.jsu.annotation.TransientVariable;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.opensymphony.user.EntityNotFoundException;
+import com.opensymphony.user.Group;
+import com.opensymphony.user.User;
+import com.opensymphony.user.UserManager;
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.workflow.InvalidInputException;
+import com.opensymphony.workflow.WorkflowContext;
 import com.opensymphony.workflow.WorkflowException;
 
 /**
@@ -24,6 +33,12 @@ public class CommentRequiredValidator extends GenericValidator {
 	
 	@Argument("errorMessage")
 	private String errorMsg;
+	
+	@Argument("hidGroupsList")
+	private String strGroupsSelected;
+	
+	@TransientVariable("context")
+	private WorkflowContext context;
 
 	/* (non-Javadoc)
 	 * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
@@ -49,9 +64,28 @@ public class CommentRequiredValidator extends GenericValidator {
 		}
         if (!TextUtils.stringSet(strComment))
         {
+        	//bypass validator for certain users
+    		try {
+    			// Obtain the current user.
+    			User userLogged = UserManager.getInstance().getUser(context.getCaller());
+    			
+    			// If there aren't groups selected, hidGroupsList is equal to "".
+    			// And groupsSelected will be an empty collection.
+    			Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+    			
+    			Iterator it = groupsSelected.iterator();
+    			while(it.hasNext()){
+    				if(userLogged.inGroup((Group) it.next())){
+    					return;
+    				}
+    			}
+    		} catch (EntityNotFoundException e)
+			{
+			}
+        	
         	//find Comment field
         	Field field = ManagerFactory.getFieldManager().getField(IssueFieldConstants.COMMENT);
-        	this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to David.");
+        	this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to your administrator.");
         }
 	}
 

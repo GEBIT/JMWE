@@ -3,7 +3,7 @@
 	<plugin-info>
 		<description>${project.description}</description>
 		<version>${project.version}</version>
-		<application-version min="3.13" max="3.13" />
+		<application-version min="3.10" max="3.13" />
 		<vendor name="Innovalog"
 			url="http://www.innovalog.com" />
 	</plugin-info>

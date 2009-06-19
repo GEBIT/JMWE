@@ -3,12 +3,15 @@
  */
 package com.innovalog.jmwe.plugins.validators;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.atlassian.core.user.GroupUtils;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginValidatorFactory;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ValidatorDescriptor;
 
@@ -27,13 +30,30 @@ public class WorkflowCommentRequiredValidator extends
 			AbstractDescriptor descriptor) {
 		getVelocityParamsForInput(velocityParams);
 		getVelocityParamsForView(velocityParams, descriptor);
-	}
+
+		ValidatorDescriptor validatorDescriptor = (ValidatorDescriptor) descriptor;
+		Map args = validatorDescriptor.getArgs();
+		
+		velocityParams.remove("val-groupsList");
+		
+		String strGroupsSelected = (String)args.get("hidGroupsList");
+		Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+		
+		Collection groups = GroupUtils.getGroups();
+		groups.removeAll(groupsSelected);
+		
+		velocityParams.put("val-hidGroupsList", WorkflowUtils.getStringGroup(groupsSelected, WorkflowUtils.SPLITTER));
+		velocityParams.put("val-groupsList", Collections.unmodifiableCollection(groups));
+}
 
 	/* (non-Javadoc)
 	 * @see com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory#getVelocityParamsForInput(java.util.Map)
 	 */
 	@Override
 	protected void getVelocityParamsForInput(Map velocityParams) {
+		Collection groups = GroupUtils.getGroups();
+		velocityParams.put("val-groupsList", Collections.unmodifiableCollection(groups));
+		velocityParams.put("val-splitter", WorkflowUtils.SPLITTER);
 	}
 
 	/* (non-Javadoc)
@@ -45,7 +65,12 @@ public class WorkflowCommentRequiredValidator extends
 		ValidatorDescriptor validatorDescriptor = (ValidatorDescriptor) descriptor;
 		Map args = validatorDescriptor.getArgs();
 		velocityParams.put("errorMessage", args.get("errorMessage"));
-	}
+
+		String strGroupsSelected = (String)args.get("hidGroupsList");
+		Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+		
+		velocityParams.put("val-groupsListSelected", Collections.unmodifiableCollection(groupsSelected));
+}
 
 	/* (non-Javadoc)
 	 * @see com.atlassian.jira.plugin.workflow.WorkflowPluginFactory#getDescriptorParams(java.util.Map)
@@ -59,6 +84,14 @@ public class WorkflowCommentRequiredValidator extends
 		}
 		
 		params.put("errorMessage", strErrorMessage);
+		
+		try{
+			String strGroupsSelected = extractSingleParam(formParams, "hidGroupsList");
+			params.put("hidGroupsList", strGroupsSelected);
+			
+		}catch(IllegalArgumentException iae){
+			// Aggregate so that Transitions can be added.
+		}
 		
 		return params;
 	}

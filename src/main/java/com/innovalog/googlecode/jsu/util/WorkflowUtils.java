@@ -755,6 +755,8 @@ public class WorkflowUtils {
 	 * 
 	 */
 	public static List<Group> getGroups(String strGroups, String splitter) {
+		if (strGroups==null)
+			return new ArrayList<Group>();
 		String[] groups = strGroups.split("\\Q" + splitter + "\\E");
 		List<Group> groupList = new ArrayList<Group>(groups.length);
 

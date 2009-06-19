@@ -1,1 +1,10 @@
-If a Comment is not provided, report the following error: <b>$errorMessage</b>
+If a Comment is not provided, report the following error: <b>$errorMessage</b>.&nbsp;
+#if (${val-groupsListSelected})
+  #if (${val-groupsListSelected.isEmpty()})
+  #else
+    Users in any of following groups will not need to provide a comment: 
+    #foreach ($singleValue in ${val-groupsListSelected})
+      <b>$!singleValue.getName()</b>#if ($velocityCount != ${val-groupsListSelected.size()}), #end
+    #end
+  #end
+#end
