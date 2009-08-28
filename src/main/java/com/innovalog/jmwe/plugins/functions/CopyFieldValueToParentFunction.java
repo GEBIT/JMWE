@@ -8,6 +8,7 @@ import webwork.dispatcher.ActionResult;
 
 import com.atlassian.core.ofbiz.CoreFactory;
 import com.atlassian.core.util.map.EasyMap;
+import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.action.ActionNames;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
@@ -56,6 +57,7 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 				ActionResult aResult = CoreFactory.getActionDispatcher().execute(ActionNames.ISSUE_UPDATE, actionParams);
 				if (aResult.getResult() != null && !aResult.getResult().equals("success"))
 					log.error(aResult.getResult());
+				ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
 			}
 		} catch (Exception e)
 		{

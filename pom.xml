@@ -13,7 +13,7 @@
 	<groupId>com.innovalog.jmwe</groupId>
 	<artifactId>jira-misc-workflow-extensions</artifactId>
 	<name>JIRA Misc Workflow Extensions</name>
-	<version>1.3.2</version>
+	<version>1.3.3</version>
 	<packaging>jar</packaging>
 
 	<scm>
