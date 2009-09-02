@@ -406,7 +406,7 @@ public class WorkflowUtils {
 								"Wrong affected version value");
 					}
 				} else if (value instanceof Version) {
-					issue.setAffectedVersions(Arrays.asList(value));
+					issue.setAffectedVersions((Collection)Arrays.asList(value));
 				} else if (value instanceof Collection) {
 					issue.setAffectedVersions((Collection) value);
 				} else {
@@ -451,7 +451,7 @@ public class WorkflowUtils {
 						issue.setFixVersions(Arrays.asList(v));
 					}
 				} else if (value instanceof Version) {
-					issue.setFixVersions(Arrays.asList(value));
+					issue.setFixVersions((Collection)Arrays.asList(value));
 				} else if (value instanceof Collection) {
 					issue.setFixVersions((Collection) value);
 				} else {

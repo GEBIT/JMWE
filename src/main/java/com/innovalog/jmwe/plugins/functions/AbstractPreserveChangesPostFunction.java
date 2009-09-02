@@ -19,7 +19,7 @@ import com.opensymphony.workflow.WorkflowException;
  * @author <A href="mailto:abashev at gmail dot com">Alexey Abashev</A>
  * @version $Id$
  */
-abstract class AbstractPreserveChangesPostFunction extends AbstractJiraFunctionProvider {
+public abstract class AbstractPreserveChangesPostFunction extends AbstractJiraFunctionProvider {
 	private static final String CHANGE_ITEMS = "changeItems";
 	
 	protected final Logger log = Logger.getLogger(this.getClass());

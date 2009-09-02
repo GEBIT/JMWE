@@ -32,6 +32,7 @@ import com.atlassian.jira.issue.fields.CustomField;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.issue.fields.FieldException;
 import com.atlassian.jira.issue.fields.FieldManager;
+import com.atlassian.jira.issue.fields.NavigableField;
 import com.atlassian.jira.issue.fields.config.FieldConfig;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayout;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
@@ -85,7 +86,7 @@ public class CommonPluginUtils {
 		Set<Field> allFields = new TreeSet<Field>(getComparator());
 		
 		try {
-			final Set<Field> fields = fieldManager.getAllAvailableNavigableFields();
+			final Set<NavigableField> fields = fieldManager.getAllAvailableNavigableFields();
 			
 			for (Field f : fields) {
 				allFields.add(f);
