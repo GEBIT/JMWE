@@ -1,0 +1,18 @@
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">$i18n.getText("admin.common.words.projectrole"):</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+        #selectMapSelected ("selectedProjectRoleId" ${projectroles} ${selectedProjectRoleId})
+        <br><font size="1">Select the project role the current user must belong to.</font>
+    </td>
+</tr>
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+        <span class="label">Issue Security Level:</span>
+    </td>
+    <td bgcolor="ffffff" nowrap>
+        #selectMapSelected ("selectedSecurityLevelId" ${securitylevels} ${selectedSecurityLevelId})
+        <br><font size="1">Select the security level to assign to the issue.</font>
+    </td>
+</tr>

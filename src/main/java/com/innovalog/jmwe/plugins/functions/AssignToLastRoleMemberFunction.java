@@ -47,9 +47,7 @@ public class AssignToLastRoleMemberFunction implements FunctionProvider
     {
         
         Long projectRoleId= null;        
-        String rawprojectRoleId= null;        
-        rawprojectRoleId=(String)args.get("jira.projectrole.id");
-        projectRoleId=null;
+        String rawprojectRoleId=(String)args.get("jira.projectrole.id");
         if(StringUtils.isBlank(rawprojectRoleId))
         {
           log.warn("AssignToLastRoleMember not configured with a valid projectroleid. (no assignment will be made)");
