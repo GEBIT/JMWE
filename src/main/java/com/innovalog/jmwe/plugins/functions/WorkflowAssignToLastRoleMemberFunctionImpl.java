@@ -5,6 +5,7 @@
 package com.innovalog.jmwe.plugins.functions;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.util.map.EasyMap;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
 
@@ -80,6 +80,7 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 		Long longId = new Long(id);
 		projectRole=projectRoleManager.getProjectRole(longId);
 				
+		velocityParams.put("includeReporter", fucntionDescriptor.getArgs().get("includeReporter"));
 		velocityParams.put("projectrole",id);
 		if(projectRole!=  null)
 		{
@@ -90,9 +91,16 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 
 	public Map getDescriptorParams(Map functionParams)
 	{
+		Map<String, String> params = new HashMap<String, String>();
 		String value= null;
 		value=this.extractSingleParam(functionParams,"jira.projectrole.id");
-		return EasyMap.build("jira.projectrole.id",value);
+		params.put("jira.projectrole.id",value);
+		try {
+			params.put("includeReporter", this.extractSingleParam(functionParams,"includeReporter"));
+		} catch (IllegalArgumentException e) {
+			params.put("includeReporter", "no");
+		}
+		return params;
 	}
 
 }

@@ -33,13 +33,13 @@ import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
+import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.user.EntityNotFoundException;
 import com.opensymphony.user.User;
-import com.opensymphony.workflow.FunctionProvider;
 
 // This post function will assign the issue to the first default user of teh specified role 
-public class AssignToLastRoleMemberFunction implements FunctionProvider
+public class AssignToLastRoleMemberFunction extends AbstractJiraFunctionProvider
 {
     private static final Category log = Category.getInstance(AssignToLastRoleMemberFunction.class);
 
@@ -131,6 +131,19 @@ public class AssignToLastRoleMemberFunction implements FunctionProvider
         	        issue.store();
         			return;
         		}        		
+        	}
+        	
+        	if (args.get("includeReporter") != null && ((String)args.get("includeReporter")).equalsIgnoreCase("yes"))
+        	{
+    	        MutableIssue issue = (MutableIssue) transientVars.get("issue");        
+        		user = issue.getReporter();
+        		if (user!=null && users.contains(user))
+        		{
+        			// Assign the issue
+        	        issue.setAssignee(user);
+        	        issue.store();
+        			return;       			
+        		}
         	}
         	
         	StringBuffer sb = new StringBuffer();

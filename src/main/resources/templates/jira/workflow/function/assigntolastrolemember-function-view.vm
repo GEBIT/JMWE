@@ -1,5 +1,9 @@
 #if (${projectrolename})
+#if (${includeReporter}=="yes")
+Assign the issue to the last user from the <b>${projectrolename}</b> role that had this issue assigned before or who reported it.
+#else
 Assign the issue to the last user from the <b>${projectrolename}</b> role that had this issue assigned before.
+#end
 #else
 $i18n.getText("admin.workflow.condition.isuserinprojectrole.view.missing","$projectrole")
 #end

@@ -2,23 +2,18 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<parent>
-		<groupId>com.atlassian.jira.plugins</groupId>
-		<artifactId>jira-plugin-base</artifactId>
-		<version>5</version>
-	</parent>
 
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.innovalog.jmwe</groupId>
 	<artifactId>jira-misc-workflow-extensions</artifactId>
 	<name>JIRA Misc Workflow Extensions</name>
-	<version>1.5</version>
-	<packaging>jar</packaging>
+	<version>1.5.1</version>
+	<packaging>atlassian-plugin</packaging>
 
 	<scm>
-		<connection>scm:svn:http://svn.atlassian.com/svn/public/contrib/jira/jira-misc-workflow-extensions/trunk/</connection>
-		<developerConnection>scm:svn:https://svn.atlassian.com/svn/public/contrib/jira/jira-misc-workflow-extensions/trunk/</developerConnection>
+		<connection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</connection>
+		<developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</developerConnection>
 	</scm>
 
 
@@ -30,7 +25,8 @@
 			Change this property to compile your plugin against different JIRA
 			versions.
 		-->
-		<jira.version>3.13.3</jira.version>
+        <jira.version>4.0.1</jira.version>
+        <jira.data.version>4.0</jira.data.version>
 	</properties>
 
 	<description>Several JIRA workflow extensions</description>
@@ -53,58 +49,50 @@
 
 	<inceptionYear>2008</inceptionYear>
 
-	<build>
-		<resources>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>atlassian-plugin.xml</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>src/main/resources</directory>
-				<filtering>false</filtering>
-				<includes>
-					<include>**/*.*</include>
-				</includes>
-				<excludes>
-					<exclude>atlassian-plugin.xml</exclude>
-				</excludes>
-			</resource>
-		</resources>
-		<!--
-			The following plugin definitions are required to invoke functions
-			that build run-time environment for running integration tests against
-			JIRA
-		-->
-		<plugins>
-			<plugin>
-				<artifactId>maven-dependency-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.codehaus.cargo</groupId>
-				<artifactId>cargo-maven2-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<!--
-					This makes sure that the plugin is compiled to be compatible with
-					Java 1.5
-				-->
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jira-plugin</artifactId>
+                <version>3.0.4</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <productVersion>${jira.version}</productVersion>
+                    <productDataVersion>${jira.data.version}</productDataVersion>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
-	<profiles>
+    <dependencies>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>atlassian-jira</artifactId>
+            <version>${jira.version}</version>
+            <scope>provided</scope>
+        </dependency>        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.atlassian.jira</groupId>
+            <artifactId>jira-func-tests</artifactId>
+            <version>${jira.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+<!-- <profiles>
 		<profile>
 			<id>plugin-debug</id>
 			<build>
@@ -130,15 +118,7 @@
 			</properties>
 		</profile>
 	</profiles>
-
-	<dependencies>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>3.8.1</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+-->
 
 	<distributionManagement>
 		<repository>
