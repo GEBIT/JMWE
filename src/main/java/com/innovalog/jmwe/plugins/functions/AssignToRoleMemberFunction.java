@@ -9,8 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+
+import webwork.action.ServletActionContext;
 
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.Issue;
@@ -31,7 +35,15 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 
     public void execute(Map transientVars, Map args, PropertySet ps)
     {
-               
+    	HttpServletRequest request = ServletActionContext.getRequest();
+    	if (request!=null)
+    	{
+	    	String[] assigneeSelected = request.getParameterValues("assignee");
+	    	if( assigneeSelected != null && !assigneeSelected[0].equals("-1") && args.get("skipIfAssignee")!=null && ((String)args.get("skipIfAssignee")).equalsIgnoreCase("yes")) {
+	    	    // the user explicitly selected an assignee (and not "Unassigned")
+	    	    return;
+	    	}
+    	}              
         
         Long projectRoleId= null;        
         String rawprojectRoleId= null;        

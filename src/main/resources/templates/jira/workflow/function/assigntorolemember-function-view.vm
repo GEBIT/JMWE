@@ -1,5 +1,9 @@
 #if (${projectrolename})
-Assign the issue to the default user from the <b>${projectrolename}</b> role.
+Assign the issue to the default user from the <b>${projectrolename}</b> role
+#if ($skipIfAssignee=="yes")
+ (unless user selects an Assignee)
+#end
+.
 #else
 $i18n.getText("admin.workflow.condition.isuserinprojectrole.view.missing","$projectrole")
 #end

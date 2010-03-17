@@ -63,7 +63,7 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 
 	protected void getVelocityParamsForView(Map velocityParams, AbstractDescriptor descriptor)
 	{
-		FunctionDescriptor fucntionDescriptor= null;
+		FunctionDescriptor functionDescriptor= null;
 		ProjectRole projectRole= null;
 		ProjectRoleManager projectRoleManager= null;
 		String id= null;
@@ -74,13 +74,14 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 			throw exp;
 
 		}
-		fucntionDescriptor=(FunctionDescriptor)descriptor;
+		functionDescriptor=(FunctionDescriptor)descriptor;
 		projectRoleManager=(ProjectRoleManager)ComponentManager.getComponentInstanceOfType(ProjectRoleManager.class);
-		id=(String)fucntionDescriptor.getArgs().get("jira.projectrole.id");
+		id=(String)functionDescriptor.getArgs().get("jira.projectrole.id");
 		Long longId = new Long(id);
 		projectRole=projectRoleManager.getProjectRole(longId);
 				
-		velocityParams.put("includeReporter", fucntionDescriptor.getArgs().get("includeReporter"));
+		velocityParams.put("includeReporter", functionDescriptor.getArgs().get("includeReporter"));
+		velocityParams.put("skipIfAssignee", functionDescriptor.getArgs().get("skipIfAssignee"));
 		velocityParams.put("projectrole",id);
 		if(projectRole!=  null)
 		{
@@ -99,6 +100,11 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 			params.put("includeReporter", this.extractSingleParam(functionParams,"includeReporter"));
 		} catch (IllegalArgumentException e) {
 			params.put("includeReporter", "no");
+		}
+		try {
+			params.put("skipIfAssignee", this.extractSingleParam(functionParams,"skipIfAssignee"));
+		} catch (IllegalArgumentException e) {
+			params.put("skipIfAssignee", "no");
 		}
 		return params;
 	}

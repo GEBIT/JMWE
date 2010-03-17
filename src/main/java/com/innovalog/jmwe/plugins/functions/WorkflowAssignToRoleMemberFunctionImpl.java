@@ -5,6 +5,7 @@
 package com.innovalog.jmwe.plugins.functions;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -15,7 +16,6 @@ import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.util.map.EasyMap;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
 
@@ -63,7 +63,7 @@ public class WorkflowAssignToRoleMemberFunctionImpl extends AbstractWorkflowPlug
 
 	protected void getVelocityParamsForView(Map velocityParams, AbstractDescriptor descriptor)
 	{
-		FunctionDescriptor fucntionDescriptor= null;
+		FunctionDescriptor functionDescriptor= null;
 		ProjectRole projectRole= null;
 		ProjectRoleManager projectRoleManager= null;
 		String id= null;
@@ -74,12 +74,13 @@ public class WorkflowAssignToRoleMemberFunctionImpl extends AbstractWorkflowPlug
 			throw exp;
 
 		}
-		fucntionDescriptor=(FunctionDescriptor)descriptor;
+		functionDescriptor=(FunctionDescriptor)descriptor;
 		projectRoleManager=(ProjectRoleManager)ComponentManager.getComponentInstanceOfType(ProjectRoleManager.class);
-		id=(String)fucntionDescriptor.getArgs().get("jira.projectrole.id");
+		id=(String)functionDescriptor.getArgs().get("jira.projectrole.id");
 		Long longId = new Long(id);
 		projectRole=projectRoleManager.getProjectRole(longId);
 			
+		velocityParams.put("skipIfAssignee", functionDescriptor.getArgs().get("skipIfAssignee"));
 		velocityParams.put("projectrole",id);
 		if(projectRole!=  null)
 		{
@@ -90,9 +91,16 @@ public class WorkflowAssignToRoleMemberFunctionImpl extends AbstractWorkflowPlug
 
 	public Map getDescriptorParams(Map functionParams)
 	{
+		Map<String, String> params = new HashMap<String, String>();
 		String value= null;
 		value=this.extractSingleParam(functionParams,"jira.projectrole.id");
-		return EasyMap.build("jira.projectrole.id",value);
+		params.put("jira.projectrole.id",value);
+		try {
+			params.put("skipIfAssignee", this.extractSingleParam(functionParams,"skipIfAssignee"));
+		} catch (IllegalArgumentException e) {
+			params.put("skipIfAssignee", "no");
+		}
+		return params;
 	}
 
 }
