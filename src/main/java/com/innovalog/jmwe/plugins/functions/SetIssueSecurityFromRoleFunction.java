@@ -4,8 +4,11 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
+import org.ofbiz.core.entity.GenericEntityException;
+import org.ofbiz.core.entity.GenericValue;
 
 import com.atlassian.jira.ComponentManager;
+import com.atlassian.jira.ManagerFactory;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.security.roles.DefaultRoleActors;
@@ -83,7 +86,28 @@ public class SetIssueSecurityFromRoleFunction extends AbstractJiraFunctionProvid
 				return;
 			}
 
-			issue.setSecurityLevelId(issueSecurityId);
+			try {
+				issue.setSecurityLevelId(issueSecurityId);
+			}
+			catch (NoSuchMethodError err) {
+	            // Attempt to find the level
+	            GenericValue securityLevelGV = null;
+	            try
+	            {
+	                securityLevelGV = ManagerFactory.getIssueSecurityLevelManager().getIssueSecurityLevel(issueSecurityId);
+	            }
+	            catch (GenericEntityException e)
+	            {
+	                throw new IllegalArgumentException("Invalid SecurityLevel ID '" + issueSecurityId + "'.");
+	            }
+	            if (securityLevelGV == null)
+	            {
+	                throw new IllegalArgumentException("Invalid SecurityLevel ID '" + issueSecurityId + "'.");
+	            }
+	            // Call through to the original setSecurityLevel() method
+	            issue.setSecurityLevel(securityLevelGV);
+
+			}
 		}
 	}
 
