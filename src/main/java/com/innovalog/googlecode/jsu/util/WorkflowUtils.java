@@ -536,6 +536,17 @@ public class WorkflowUtils {
 			} else if (fieldId.equals(IssueFieldConstants.SECURITY)) {
 				if (value == null) {
 					issue.setSecurityLevel(null);
+				} else if (value instanceof GenericValue) {
+					issue.setSecurityLevel((GenericValue)value);
+				} else if (value instanceof String) {
+					try {
+						Long l = Long.decode((String)value);
+						issue.setSecurityLevelId(l);
+					}
+					catch (NumberFormatException e)
+					{
+						throw new UnsupportedOperationException("Cannot set Issue Security from name");
+					}
 				} else {
 					throw new UnsupportedOperationException("Not implemented");
 				}
