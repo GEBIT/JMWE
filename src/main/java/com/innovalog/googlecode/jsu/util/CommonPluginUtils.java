@@ -310,7 +310,6 @@ public class CommonPluginUtils {
 //				IssueFieldConstants.FIX_FOR_VERSIONS,
 				IssueFieldConstants.PRIORITY,
 				IssueFieldConstants.PROJECT,
-				IssueFieldConstants.RESOLUTION,
 				IssueFieldConstants.SECURITY,
 				IssueFieldConstants.STATUS,
 				IssueFieldConstants.SUBTASKS,

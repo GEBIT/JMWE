@@ -86,27 +86,31 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 			if (users != null && users.size() > 0) {
 				
 				//Try to see if there is a user that has a following property:
-				// 1. name: [ProjectName]x[RoleName]
-				// 2. value: default
-				String propertyName = project.getName() + "x" + projectRole.getName();
+				// 1. name: [ProjectName]x[RoleName], value: default
+				// or 2. name: defaultAssignee[x], value: [ProjectName]x[RoleName]
+				String propertyNameOrValue = project.getName() + "x" + projectRole.getName();
 				Iterator iterator = users.iterator();
 				while (iterator.hasNext()) {
 					User user = (User)iterator.next();
 					
 					PropertySet userProperties = user.getPropertySet();
-					String property = userProperties.getString("jira.meta." + propertyName); 
+					String property = userProperties.getString("jira.meta." + propertyNameOrValue); 
 					if (property != null && "default".equals(property)) {
 						assignToUser = user;
 						break;
 					}
-					
+					for (int i=1;  (property = userProperties.getString("jira.meta." + "defaultAssignee"+i)) != null; i++)
+						if (property.equalsIgnoreCase(propertyNameOrValue)) {
+							assignToUser = user;
+							break;
+						}
 				}
 				
 				//We couldn't find a user with the specified property, pick the first guy
 				if (assignToUser == null) {
 					assignToUser = (User)users.iterator().next();
 					StringBuffer sb = new StringBuffer();
-			          log.warn(sb.append("AssignToRoleMember was not able to find a user with the property named ").append(propertyName).append(" and value set to \"default\". First user from the role will be used."));					
+			          log.warn(sb.append("AssignToRoleMember was not able to find a user with the property named ").append(propertyNameOrValue).append(" and value set to \"default\". First user from the role will be used."));					
 				}
 								
 								

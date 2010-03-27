@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericEntityException;
 import org.ofbiz.core.entity.GenericValue;
 
@@ -20,6 +21,7 @@ import com.atlassian.jira.ManagerFactory;
 import com.atlassian.jira.config.properties.APKeys;
 import com.atlassian.jira.config.properties.ApplicationProperties;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.IssueConstant;
 import com.atlassian.jira.issue.IssueFieldConstants;
 import com.atlassian.jira.issue.IssueRelationConstants;
 import com.atlassian.jira.issue.ModifiedValue;
@@ -33,8 +35,8 @@ import com.atlassian.jira.issue.fields.FieldManager;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutItem;
 import com.atlassian.jira.issue.fields.layout.field.FieldLayoutStorageException;
 import com.atlassian.jira.issue.fields.screen.FieldScreen;
+import com.atlassian.jira.issue.resolution.Resolution;
 import com.atlassian.jira.issue.status.Status;
-import com.atlassian.jira.issue.status.StatusImpl;
 import com.atlassian.jira.issue.util.IssueChangeHolder;
 import com.atlassian.jira.issue.worklog.WorkRatio;
 import com.atlassian.jira.project.version.Version;
@@ -46,11 +48,10 @@ import com.opensymphony.user.User;
 import com.opensymphony.workflow.loader.ActionDescriptor;
 
 /**
- *         This utils class exposes common methods to custom workflow objects.
+ * This utils class exposes common methods to custom workflow objects.
  * 
  */
 public class WorkflowUtils {
-
 	public static final String SPLITTER = "@@";
 
 	public static final String CONDITION_MAJOR = ">";
@@ -70,6 +71,8 @@ public class WorkflowUtils {
 	private static final WorkflowActionsBean workflowActionsBean = new WorkflowActionsBean();
 
 	public static final String CASCADING_SELECT_TYPE = "com.atlassian.jira.plugin.system.customfieldtypes:cascadingselect";
+
+	private static final Logger log = Logger.getLogger(WorkflowUtils.class);
 
 	/**
 	 * @return a list of boolean values.
@@ -159,8 +162,7 @@ public class WorkflowUtils {
 		}
 
 		if (field == null) {
-			throw new IllegalArgumentException("Unable to find field '" + key
-					+ "'");
+			throw new IllegalArgumentException("Unable to find field '" + key + "'");
 		}
 
 		return field;
@@ -183,26 +185,27 @@ public class WorkflowUtils {
 
 		try {
 			if (fldManager.isCustomField(field)) {
-				// Return the CustomField value. It will be any object.
+				// Return the CustomField value. It could be any object.
 				CustomField customField = (CustomField) field;
+				Object value = issue.getCustomFieldValue(customField);
 
 				// TODO Maybe for cascade we have to create separate manager
-				if (CASCADING_SELECT_TYPE.equals(customField
-						.getCustomFieldType().getKey())) {
-					CustomFieldParams value = (CustomFieldParams) issue
-							.getCustomFieldValue(customField);
+				if (CASCADING_SELECT_TYPE.equals(customField.getCustomFieldType().getKey())) {
+					CustomFieldParams params = (CustomFieldParams) value;
 
-					if (value != null) {
-						Object parent = value.getFirstValueForNullKey();
-						Object child = value.getFirstValueForKey("1");
+					if (params != null) {
+						Object parent = params.getFirstValueForNullKey();
+						Object child = params.getFirstValueForKey("1");
 
 						if (parent != null) {
-							retVal = child;
+							retVal = child.toString();
 						}
 					}
 				} else {
-					retVal = issue.getCustomFieldValue(customField);
+					retVal = value;
 				}
+
+				log.debug("Get field value [object=" + retVal + ";class=" + ((retVal != null) ? retVal.getClass() : "") + "]");
 			} else {
 				String fieldId = field.getId();
 				Collection retCollection = null;
@@ -212,15 +215,13 @@ public class WorkflowUtils {
 				if (fieldId.equals(IssueFieldConstants.ATTACHMENT)) {
 					// return a collection with the attachments associated to
 					// given issue.
-					retCollection = (Collection) issue
-							.getExternalFieldValue(fieldId);
+					retCollection = (Collection) issue.getExternalFieldValue(fieldId);
 					if (retCollection == null || retCollection.isEmpty()) {
 						isEmpty = true;
 					} else {
 						retVal = retCollection;
 					}
-				} else if (fieldId
-						.equals(IssueFieldConstants.AFFECTED_VERSIONS)) {
+				} else if (fieldId.equals(IssueFieldConstants.AFFECTED_VERSIONS)) {
 					retCollection = issue.getAffectedVersions();
 					if (retCollection == null || retCollection.isEmpty()) {
 						isEmpty = true;
@@ -230,10 +231,7 @@ public class WorkflowUtils {
 				} else if (fieldId.equals(IssueFieldConstants.COMMENT)) {
 					// return a list with the comments of a given issue.
 					try {
-						retCollection = ManagerFactory.getIssueManager()
-								.getEntitiesByIssue(
-										IssueRelationConstants.COMMENTS,
-										issue.getGenericValue());
+						retCollection = ManagerFactory.getIssueManager().getEntitiesByIssue(IssueRelationConstants.COMMENTS, issue.getGenericValue());
 						if (retCollection == null || retCollection.isEmpty()) {
 							isEmpty = true;
 						} else {
@@ -265,8 +263,7 @@ public class WorkflowUtils {
 					// Not implemented, yet.
 					isEmpty = true;
 				} else if (fieldId.equals(IssueFieldConstants.ISSUE_LINKS)) {
-					retVal = ComponentManager.getInstance()
-							.getIssueLinkManager().getIssueLinks(issue.getId());
+					retVal = ComponentManager.getInstance().getIssueLinkManager().getIssueLinks(issue.getId());
 				} else if (fieldId.equals(IssueFieldConstants.WORKRATIO)) {
 					retVal = String.valueOf(WorkRatio.getWorkRatio(issue));
 				} else if (fieldId.equals(IssueFieldConstants.ISSUE_KEY)) {
@@ -304,10 +301,7 @@ public class WorkflowUtils {
 				} else if (fieldId.equals(IssueFieldConstants.SUMMARY)) {
 					retVal = issue.getSummary();
 				} else {
-					LogUtils.getGeneral()
-							.error(
-									"Issue field \"" + fieldId
-											+ "\" is not supported.");
+					LogUtils.getGeneral().error("Issue field \"" + fieldId + "\" is not supported.");
 
 					GenericValue gvIssue = issue.getGenericValue();
 
@@ -319,8 +313,7 @@ public class WorkflowUtils {
 		} catch (NullPointerException e) {
 			retVal = null;
 
-			LogUtils.getGeneral().error(
-					"Unable to get field \"" + field.getId() + "\" value", e);
+			LogUtils.getGeneral().error("Unable to get field \"" + field.getId() + "\" value", e);
 		}
 
 		return retVal;
@@ -333,48 +326,63 @@ public class WorkflowUtils {
 	 * @param field
 	 * @param value
 	 */
-	public static void setFieldValue(MutableIssue issue, Field field,
-			Object value, IssueChangeHolder changeHolder) {
+	public static void setFieldValue(MutableIssue issue, Field field, Object value, IssueChangeHolder changeHolder) {
 		FieldManager fldManager = ManagerFactory.getFieldManager();
 
 		if (fldManager.isCustomField(field)) {
 			CustomField customField = (CustomField) field;
 			Object oldValue = issue.getCustomFieldValue(customField);
 			FieldLayoutItem fieldLayoutItem;
-
+            CustomFieldType cfType = customField.getCustomFieldType();
+			
 			try {
-				fieldLayoutItem = CommonPluginUtils.getFieldLayoutItem(issue,
-						field);
+				fieldLayoutItem = CommonPluginUtils.getFieldLayoutItem(issue, field);
 			} catch (FieldLayoutStorageException e) {
-				LogUtils.getGeneral().error("Unable to get field layout item",
-						e);
+				LogUtils.getGeneral().error("Unable to get field layout item", e);
 
 				throw new IllegalStateException(e);
 			}
 
 			Object newValue = value;
+			
+            if (value instanceof IssueConstant) {
+				newValue = ((IssueConstant) value).getName();
+            } else if (value instanceof User) {
+				newValue = ((User) value).getName();
+            }
+            	
+            if ((newValue instanceof String) || (newValue instanceof Collection)) {
+            	//convert from string to Object
+            	CustomFieldParams fieldParams = new CustomFieldParamsImpl(customField, newValue);
 
-			if (value instanceof StatusImpl) {
-				newValue = ((StatusImpl) value).getName();
-			}
-			if (value instanceof String) {
-				// convert from string to Object
-				CustomFieldType cfType = customField.getCustomFieldType();
-				CustomFieldParams fieldParams = new CustomFieldParamsImpl(
-						customField, value);
-				newValue = cfType.getValueFromCustomFieldParams(fieldParams);
-			}
-
+            	newValue = cfType.getValueFromCustomFieldParams(fieldParams);
+            }
+			
 			// Updating internal custom field value
 			issue.setCustomFieldValue(customField, newValue);
+			
+			customField.updateValue(
+					fieldLayoutItem, issue, 
+					new ModifiedValue(oldValue, newValue),	changeHolder
+			);
 
-			customField.updateValue(fieldLayoutItem, issue, new ModifiedValue(
-					oldValue, newValue), changeHolder);
+            if (log.isDebugEnabled()) {
+                log.debug(
+                        "Issue [" +
+                        issue +
+                        "] got modfied fields - [" +
+                        issue.getModifiedFields() +
+                        "]"
+                );
+            }
 
-			// Remove duplicated issue update
-			if (issue.getModifiedFields().containsKey(field.getId())) {
-				issue.getModifiedFields().remove(field.getId());
-			}
+            // Not new
+            if (issue.getKey() != null) {
+                // Remove duplicated issue update
+                if (issue.getModifiedFields().containsKey(field.getId())) {
+                    issue.getModifiedFields().remove(field.getId());
+                }
+            }
 		} else {
 			final String fieldId = field.getId();
 
@@ -394,24 +402,20 @@ public class WorkflowUtils {
 				if (value == null) {
 					issue.setAffectedVersions(Collections.EMPTY_SET);
 				} else if (value instanceof String) {
-					VersionManager versionManager = ComponentManager
-							.getInstance().getVersionManager();
-					Version v = versionManager.getVersion(issue
-							.getProjectObject().getId(), (String) value);
+					VersionManager versionManager = ComponentManager.getInstance().getVersionManager();
+					Version v = versionManager.getVersion(issue.getProjectObject().getId(), (String) value);
 
 					if (v != null) {
 						issue.setAffectedVersions(Arrays.asList(v));
 					} else {
-						throw new IllegalArgumentException(
-								"Wrong affected version value");
+						throw new IllegalArgumentException("Wrong affected version value");
 					}
 				} else if (value instanceof Version) {
-					issue.setAffectedVersions((Collection)Arrays.asList(value));
+					issue.setAffectedVersions((Collection) Arrays.asList(value));
 				} else if (value instanceof Collection) {
 					issue.setAffectedVersions((Collection) value);
 				} else {
-					throw new IllegalArgumentException(
-							"Wrong affected version value");
+					throw new IllegalArgumentException("Wrong affected version value");
 				}
 			} else if (fieldId.equals(IssueFieldConstants.COMMENT)) {
 				throw new UnsupportedOperationException("Not implemented");
@@ -442,21 +446,18 @@ public class WorkflowUtils {
 				if (value == null) {
 					issue.setFixVersions(Collections.EMPTY_SET);
 				} else if (value instanceof String) {
-					VersionManager versionManager = ComponentManager
-							.getInstance().getVersionManager();
-					Version v = versionManager.getVersion(issue
-							.getProjectObject().getId(), (String) value);
+					VersionManager versionManager = ComponentManager.getInstance().getVersionManager();
+					Version v = versionManager.getVersion(issue.getProjectObject().getId(), (String) value);
 
 					if (v != null) {
 						issue.setFixVersions(Arrays.asList(v));
 					}
 				} else if (value instanceof Version) {
-					issue.setFixVersions((Collection)Arrays.asList(value));
+					issue.setFixVersions((Collection) Arrays.asList(value));
 				} else if (value instanceof Collection) {
 					issue.setFixVersions((Collection) value);
 				} else {
-					throw new IllegalArgumentException(
-							"Wrong fix version value");
+					throw new IllegalArgumentException("Wrong fix version value");
 				}
 			} else if (fieldId.equals(IssueFieldConstants.THUMBNAIL)) {
 				throw new UnsupportedOperationException("Not implemented");
@@ -503,6 +504,28 @@ public class WorkflowUtils {
 			} else if (fieldId.equals(IssueFieldConstants.RESOLUTION)) {
 				if (value == null) {
 					issue.setResolution(null);
+                } else if (value instanceof GenericValue) {
+					issue.setResolution((GenericValue) value);
+				} else if (value instanceof Resolution) {
+					issue.setResolutionId(((Resolution) value).getId());
+				} else if (value instanceof String) {
+					Collection<Resolution> resolutions = ManagerFactory.getConstantsManager().getResolutionObjects();
+					Resolution resolution = null;
+                    String s = ((String) value).trim();
+
+                    for (Resolution r : resolutions) {
+                        if (r.getName().equalsIgnoreCase(s)) {
+                            resolution = r;
+                            
+                            break;
+                        }
+                    }
+
+					if (resolution != null) {
+						issue.setResolutionId(resolution.getId());
+					} else {
+						throw new IllegalArgumentException("Unable to find resolution with name \"" + value + "\"");
+					}
 				} else {
 					throw new UnsupportedOperationException("Not implemented");
 				}
@@ -514,15 +537,12 @@ public class WorkflowUtils {
 				} else if (value instanceof Status) {
 					issue.setStatusId(((Status) value).getId());
 				} else if (value instanceof String) {
-					Status status = ManagerFactory.getConstantsManager()
-							.getStatusByName((String) value);
+					Status status = ManagerFactory.getConstantsManager().getStatusByName((String) value);
 
 					if (status != null) {
 						issue.setStatusId(status.getId());
 					} else {
-						throw new IllegalArgumentException(
-								"Unable to find status with name \"" + value
-										+ "\"");
+						throw new IllegalArgumentException("Unable to find status with name \"" + value + "\"");
 					}
 				} else {
 					throw new UnsupportedOperationException("Not implemented");
@@ -537,14 +557,12 @@ public class WorkflowUtils {
 				if (value == null) {
 					issue.setSecurityLevel(null);
 				} else if (value instanceof GenericValue) {
-					issue.setSecurityLevel((GenericValue)value);
+					issue.setSecurityLevel((GenericValue) value);
 				} else if (value instanceof String) {
 					try {
-						Long l = Long.decode((String)value);
+						Long l = Long.decode((String) value);
 						issue.setSecurityLevelId(l);
-					}
-					catch (NumberFormatException e)
-					{
+					} catch (NumberFormatException e) {
 						throw new UnsupportedOperationException("Cannot set Issue Security from name");
 					}
 				} else {
@@ -562,8 +580,7 @@ public class WorkflowUtils {
 							issue.setAssignee(user);
 						}
 					} catch (EntityNotFoundException e) {
-						throw new IllegalArgumentException(String.format(
-								"User \"%s\" not found", value));
+						throw new IllegalArgumentException(String.format("User \"%s\" not found", value));
 					}
 				}
 			} else if (fieldId.equals(IssueFieldConstants.DUE_DATE)) {
@@ -574,11 +591,8 @@ public class WorkflowUtils {
 				if (value instanceof Timestamp) {
 					issue.setDueDate((Timestamp) value);
 				} else if (value instanceof String) {
-					ApplicationProperties properties = ManagerFactory
-							.getApplicationProperties();
-					SimpleDateFormat formatter = new SimpleDateFormat(
-							properties
-									.getDefaultString(APKeys.JIRA_DATE_TIME_PICKER_JAVA_FORMAT));
+					ApplicationProperties properties = ManagerFactory.getApplicationProperties();
+					SimpleDateFormat formatter = new SimpleDateFormat(properties.getDefaultString(APKeys.JIRA_DATE_TIME_PICKER_JAVA_FORMAT));
 
 					try {
 						Date date = formatter.parse((String) value);
@@ -589,9 +603,7 @@ public class WorkflowUtils {
 							issue.setDueDate(null);
 						}
 					} catch (ParseException e) {
-						throw new IllegalArgumentException(
-								"Wrong date format exception for \"" + value
-										+ "\"");
+						throw new IllegalArgumentException("Wrong date format exception for \"" + value + "\"");
 					}
 				}
 			}
@@ -608,8 +620,7 @@ public class WorkflowUtils {
 	 * @param value
 	 *            Value for setting
 	 */
-	public static void setFieldValue(MutableIssue issue, String fieldKey,
-			Object value, IssueChangeHolder changeHolder) {
+	public static void setFieldValue(MutableIssue issue, String fieldKey, Object value, IssueChangeHolder changeHolder) {
 		final Field field = (Field) WorkflowUtils.getFieldFromKey(fieldKey);
 
 		setFieldValue(issue, field, value, changeHolder);
@@ -626,8 +637,7 @@ public class WorkflowUtils {
 	 *         Instead null, it will return an empty String ( "" ).
 	 * 
 	 */
-	public static String getFieldValueFromIssueAsString(Issue issue, Field field)
-			throws UnsupportedOperationException {
+	public static String getFieldValueFromIssueAsString(Issue issue, Field field) throws UnsupportedOperationException {
 
 		FieldManager fldManager = ManagerFactory.getFieldManager();
 		String retVal = null;
@@ -675,8 +685,7 @@ public class WorkflowUtils {
 				// Special treatment of fields.
 				if (fieldId.equals("issuetype")) {
 					if (issue.getIssueTypeObject() != null) {
-						retVal = issue.getIssueTypeObject()
-								.getNameTranslation();
+						retVal = issue.getIssueTypeObject().getNameTranslation();
 					} else {
 						retVal = "";
 					}
@@ -700,8 +709,7 @@ public class WorkflowUtils {
 				}
 				if (fieldId.equals("resolution")) {
 					if (issue.getResolutionObject() != null) {
-						retVal = issue.getResolutionObject()
-								.getNameTranslation();
+						retVal = issue.getResolutionObject().getNameTranslation();
 					} else {
 						retVal = "";
 					}
@@ -736,12 +744,9 @@ public class WorkflowUtils {
 					if (gvIssue.get(fieldId) != null) {
 						retVal = gvIssue.get(fieldId).toString();
 
-						if ((fieldId.equals("timeoriginalestimate"))
-								|| (fieldId.equals("timeestimate"))
-								|| (fieldId.equals("timespent"))) {
+						if ((fieldId.equals("timeoriginalestimate")) || (fieldId.equals("timeestimate")) || (fieldId.equals("timespent"))) {
 
-							retVal = String.valueOf(new Long(retVal)
-									.longValue() / 60);
+							retVal = String.valueOf(new Long(retVal).longValue() / 60);
 						}
 
 					} else {
@@ -766,7 +771,7 @@ public class WorkflowUtils {
 	 * 
 	 */
 	public static List<Group> getGroups(String strGroups, String splitter) {
-		if (strGroups==null)
+		if (strGroups == null)
 			return new ArrayList<Group>();
 		String[] groups = strGroups.split("\\Q" + splitter + "\\E");
 		List<Group> groupList = new ArrayList<Group>(groups.length);
@@ -788,8 +793,7 @@ public class WorkflowUtils {
 	 *         Get Groups as String.
 	 * 
 	 */
-	public static String getStringGroup(Collection<Group> groups,
-			String splitter) {
+	public static String getStringGroup(Collection<Group> groups, String splitter) {
 		StringBuilder sb = new StringBuilder();
 
 		for (Group g : groups) {
@@ -828,8 +832,7 @@ public class WorkflowUtils {
 	 *         Get Fields as String.
 	 * 
 	 */
-	public static String getStringField(Collection<Field> fields,
-			String splitter) {
+	public static String getStringField(Collection<Field> fields, String splitter) {
 		StringBuilder sb = new StringBuilder();
 
 		for (Field f : fields) {
