@@ -88,21 +88,35 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 				//Try to see if there is a user that has a following property:
 				// 1. name: [ProjectName]x[RoleName], value: default
 				// or 2. name: defaultAssignee[x], value: [ProjectName]x[RoleName]
+				// or 3. name: defaultAssignee, value: [ProjectKey]=>[RoleName], [ProjectKey]->[RoleName], ...
 				String propertyNameOrValue = project.getName() + "x" + projectRole.getName();
 				Iterator iterator = users.iterator();
-				while (iterator.hasNext()) {
+				userIterator: while (iterator.hasNext()) {
 					User user = (User)iterator.next();
 					
 					PropertySet userProperties = user.getPropertySet();
+					//1.
 					String property = userProperties.getString("jira.meta." + propertyNameOrValue); 
 					if (property != null && "default".equals(property)) {
 						assignToUser = user;
 						break;
 					}
-					for (int i=1;  (property = userProperties.getString("jira.meta." + "defaultAssignee"+i)) != null; i++)
+					//2.
+					for (int i=1;  (property = userProperties.getString("jira.meta.defaultAssignee"+i)) != null; i++)
 						if (property.equalsIgnoreCase(propertyNameOrValue)) {
 							assignToUser = user;
-							break;
+							break userIterator;
+						}
+					//3.
+					if (userProperties.getString("jira.meta.defaultAssignee") != null)
+						for (String s : userProperties.getString("jira.meta.defaultAssignee").split(","))
+						{
+							String[] t = s.split("->");
+							if (t.length == 2 && t[0].trim().equalsIgnoreCase(project.getKey()) && t[1].trim().equalsIgnoreCase(projectRole.getName()))
+							{
+								assignToUser = user;
+								break userIterator;
+							}
 						}
 				}
 				

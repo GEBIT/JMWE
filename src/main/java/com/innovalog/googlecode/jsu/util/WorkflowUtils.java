@@ -779,7 +779,9 @@ public class WorkflowUtils {
 		for (String s : groups) {
 			Group group = GroupUtils.getGroup(s);
 
-			groupList.add(group);
+			//JMWE-30
+			if (group != null)
+				groupList.add(group);
 		}
 
 		return groupList;
