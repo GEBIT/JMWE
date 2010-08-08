@@ -3,7 +3,7 @@ Assign the issue to the last user from the <b>${projectrolename}</b> role that h
 #if (${includeReporter}=="yes")
  or who reported it
 #end
-#if ($skipIfAssignee=="yes")
+#if ($skipIfAssignee && $skipIfAssignee=="yes")
  (unless user selects an Assignee)
 #end
 .

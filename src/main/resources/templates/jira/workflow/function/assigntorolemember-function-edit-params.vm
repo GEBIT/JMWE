@@ -12,7 +12,7 @@
     </td>
     <td bgcolor="ffffff" nowrap>
         <input type="checkbox" id="skipIfAssignee" name="skipIfAssignee" value="yes" 
-	        #if ($skipIfAssignee=='yes')
+	        #if ($skipIfAssignee && $skipIfAssignee=='yes')
 	        checked="yes"
 	        #end
 	        >Skip if Assignee</input>

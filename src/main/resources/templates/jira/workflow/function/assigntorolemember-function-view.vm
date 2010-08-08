@@ -1,6 +1,6 @@
 #if (${projectrolename})
 Assign the issue to the default user from the <b>${projectrolename}</b> role
-#if ($skipIfAssignee=="yes")
+#if ($skipIfAssignee && $skipIfAssignee=="yes")
  (unless user selects an Assignee)
 #end
 .
