@@ -1,4 +1,4 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+<atlassian-plugin key="${project.groupId}.${project.artifactId}" plugins-version="2"
 	name="${project.name}">
 	<plugin-info>
 		<description>${project.description}</description>
