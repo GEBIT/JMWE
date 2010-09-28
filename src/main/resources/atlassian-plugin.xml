@@ -314,6 +314,29 @@
 			location="templates/jira/workflow/function/setsecurityfromrole-function-edit.vm" />
 	</workflow-function>
 
+	<workflow-function key="TransitionParentIssue-function"
+		name="Transition parent issue"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowTransitionParentIssueFunction">
+		<description>
+			Transition current issue's parent issue.
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.TransitionParentIssueFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/TransitionParentIssue-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/TransitionParentIssue-function-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/TransitionParentIssue-function-edit.vm" />
+	</workflow-function>
+
 	<!-- Reports -->
 
 	<!-- Portlets -->
