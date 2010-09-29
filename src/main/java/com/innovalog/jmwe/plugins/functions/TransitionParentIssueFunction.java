@@ -59,17 +59,17 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder) throws WorkflowException {
 		MutableIssue issue = getIssue(transientVars);
 		String transitionName = (String) args.get(TRANSITION);
-		ActionDescriptor transition = transitionFromName(issue,transitionName);
-		if (transition == null) {
-			log.warn("Error while executing function : transition [" + transitionName + "] not found");
-			return;
-		}
-
 		boolean indexingPreviouslyEnabled = ImportUtils.isIndexIssues();
 
 		try {
 			MutableIssue parentIssue = (MutableIssue) issue.getParentObject();
 			if (parentIssue != null) {
+				ActionDescriptor transition = transitionFromName(parentIssue,transitionName);
+				if (transition == null) {
+					log.warn("Error while executing function : transition [" + transitionName + "] not found");
+					return;
+				}
+
 				if (!indexingPreviouslyEnabled)
 					ImportUtils.setIndexIssues(true);
 
