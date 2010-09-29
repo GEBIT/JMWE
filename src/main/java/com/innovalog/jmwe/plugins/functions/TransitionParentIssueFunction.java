@@ -82,9 +82,11 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 				ErrorCollection errorCollection = workflowTransitionUtil.validate();
 				printAnyErrors(parentIssue, errorCollection);
 
-				workflowTransitionUtil.progress();
-
-				ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
+				if (!errorCollection.hasAnyErrors())
+				{
+					workflowTransitionUtil.progress();
+					ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
+				}
 			}
 		} catch (Exception e) {
 			log.warn("Error while executing function : " + e, e);
