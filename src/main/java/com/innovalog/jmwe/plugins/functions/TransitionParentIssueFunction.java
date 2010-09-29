@@ -41,7 +41,7 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 
 	private void printAnyErrors(Issue subtask, ErrorCollection errorCollection) {
 		if (errorCollection.hasAnyErrors()) {
-			log.warn("Field validation error auto-transitioning subtask " + subtask.getKey() + ":");
+			log.warn("Field validation error auto-transitioning parent issue " + subtask.getKey() + ":");
 			Iterator iter = errorCollection.getErrorMessages().iterator();
 			while (iter.hasNext()) {
 				String errMsg = (String) iter.next();
