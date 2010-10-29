@@ -49,6 +49,21 @@
 			location="templates/jira/workflow/condition/separationofduties-condition-edit.vm" />
 	</workflow-condition>
 
+	<workflow-condition key="non-interactive-condition"
+		name="Hide transition"
+		class="com.innovalog.jmwe.plugins.conditions.WorkflowNonInteractiveCondition">
+		<description>
+			Condition to hide a transition from the user (the transition can be triggered only programmatically or from a workflow function).
+		</description>
+
+		<condition-class>
+			com.innovalog.jmwe.plugins.conditions.NonInteractiveCondition
+		</condition-class>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/condition/non-interactive-condition-view.vm" />
+	</workflow-condition>
+
 	<!-- Validators -->
 	<workflow-validator key="fieldhassinglevalue-validator"
 		name="Field has single value Validator"
