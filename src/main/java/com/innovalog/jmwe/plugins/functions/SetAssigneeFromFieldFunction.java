@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
-import com.innovalog.googlecode.jsu.util.LogUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.user.User;
@@ -18,7 +17,7 @@ import com.opensymphony.workflow.WorkflowException;
  *
  */
 public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
-	private final Logger log = LogUtils.getGeneral();
+	private static final Logger log = Logger.getLogger(SetAssigneeFromFieldFunction.class);
 
 	@SuppressWarnings("unchecked")
 	public void execute(Map transientVars, Map args, PropertySet ps) throws WorkflowException {

@@ -1,5 +1,7 @@
 package com.innovalog.googlecode.jsu.util;
 
+import static com.atlassian.jira.issue.IssueFieldConstants.*;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.model.ModelEntity;
 import org.ofbiz.core.entity.model.ModelField;
 
@@ -42,7 +45,7 @@ import com.atlassian.jira.issue.fields.screen.FieldScreen;
 import com.atlassian.jira.issue.fields.screen.FieldScreenLayoutItem;
 import com.atlassian.jira.issue.fields.screen.FieldScreenTab;
 import com.atlassian.jira.util.I18nHelper;
-import com.atlassian.jira.web.bean.FieldVisibilityBean;
+import com.atlassian.jira.web.FieldVisibilityManager;
 import com.atlassian.jira.web.bean.I18nBean;
 import com.innovalog.googlecode.jsu.helpers.NameComparatorEx;
 
@@ -53,6 +56,8 @@ import com.innovalog.googlecode.jsu.helpers.NameComparatorEx;
  * 
  */
 public class CommonPluginUtils {
+    private static final Logger log = Logger.getLogger(CommonPluginUtils.class);
+
 	private static final Collection<String> TIME_TRACKING_FIELDS = Arrays.asList(
 			IssueFieldConstants.TIME_ESTIMATE,
 			IssueFieldConstants.TIME_ORIGINAL_ESTIMATE,
@@ -72,7 +77,7 @@ public class CommonPluginUtils {
 		try {
 			allFieldsSet.addAll(fieldManager.getAllAvailableNavigableFields());
 		} catch (FieldException e) {
-			LogUtils.getGeneral().error("Unable to load navigable fields", e);
+            log.error("Unable to load navigable fields", e);
 		}
 		
 		return new ArrayList<Field>(allFieldsSet);
@@ -92,7 +97,7 @@ public class CommonPluginUtils {
 				allFields.add(f);
 			}
 		} catch (FieldException e) {
-			LogUtils.getGeneral().error("Unable to load navigable fields", e);
+            log.error("Unable to load navigable fields", e);
 		}
 		
 		return new ArrayList<Field>(allFields);
@@ -197,9 +202,11 @@ public class CommonPluginUtils {
 		if (TIME_TRACKING_FIELDS.contains(fieldId)) {
 			isHidden = !fieldManager.isTimeTrackingOn();
 		} else {
-			FieldVisibilityBean fieldVisibilityBean = new FieldVisibilityBean();
+            FieldVisibilityManager fvManager = ComponentManager.getComponentInstanceOfType(
+                    FieldVisibilityManager.class
+            );
 
-			isHidden = fieldVisibilityBean.isFieldHidden(field.getId(), issue);
+            isHidden = fvManager.isFieldHidden(field.getId(), issue);
 		}
 		
 		if (isHidden) {
@@ -220,7 +227,10 @@ public class CommonPluginUtils {
 	public static FieldLayoutItem getFieldLayoutItem(Issue issue, Field field) throws FieldLayoutStorageException {
 		final FieldLayoutManager fieldLayoutManager = ComponentManager.getInstance().getFieldLayoutManager();
 
-		FieldLayout layout = fieldLayoutManager.getFieldLayout(issue.getProject(), issue.getIssueTypeObject().getId());
+        FieldLayout layout = fieldLayoutManager.getFieldLayout(
+                issue.getProjectObject().getGenericValue(),
+                issue.getIssueTypeObject().getId()
+        );
 		
 		if (layout.getId() == null) {
 			layout = fieldLayoutManager.getEditableDefaultFieldLayout();
@@ -238,9 +248,13 @@ public class CommonPluginUtils {
 		boolean retVal = false;
 		
 		try {
-			retVal = getFieldLayoutItem(issue, field).isRequired();
+            FieldLayoutItem fieldLayoutItem = getFieldLayoutItem(issue, field);
+
+            if (fieldLayoutItem != null) {
+                retVal = fieldLayoutItem.isRequired();
+            }
 		} catch (FieldLayoutStorageException e) {
-			LogUtils.getGeneral().error("Unable to check is field required", e);
+            log.error("Unable to check is field required", e);
 		}
 		
 		return retVal;
@@ -262,17 +276,17 @@ public class CommonPluginUtils {
 	 */
 	private static List<Field> getNonCopyFromFields(){
 		return asFields(
-				IssueFieldConstants.ATTACHMENT,
-				IssueFieldConstants.COMMENT,
-				IssueFieldConstants.COMPONENTS,
+                ATTACHMENT,
+                COMMENT,
+                COMPONENTS,
 // For issue #65
 //				IssueFieldConstants.FIX_FOR_VERSIONS,
 //				IssueFieldConstants.AFFECTED_VERSIONS,
-				IssueFieldConstants.ISSUE_LINKS,
-				IssueFieldConstants.SECURITY,
-				IssueFieldConstants.SUBTASKS,
-				IssueFieldConstants.THUMBNAIL,
-				IssueFieldConstants.TIMETRACKING
+                ISSUE_LINKS,
+                SECURITY,
+                SUBTASKS,
+                THUMBNAIL,
+                TIMETRACKING
 		);
 	}
 	
@@ -291,32 +305,29 @@ public class CommonPluginUtils {
 	 */
 	private static List<Field> getNonCopyToFields(){
 		return asFields(
-				IssueFieldConstants.ATTACHMENT,
-				IssueFieldConstants.COMMENT,
-				IssueFieldConstants.COMPONENTS,
-				IssueFieldConstants.CREATED,
-				IssueFieldConstants.TIMETRACKING,
-				IssueFieldConstants.TIME_ORIGINAL_ESTIMATE,
-				IssueFieldConstants.TIME_ESTIMATE,
-				IssueFieldConstants.TIME_SPENT,
-				IssueFieldConstants.AGGREGATE_TIME_ORIGINAL_ESTIMATE,
-				IssueFieldConstants.AGGREGATE_TIME_ESTIMATE,
-				IssueFieldConstants.AGGREGATE_PROGRESS,
-				IssueFieldConstants.ISSUE_KEY,
-				IssueFieldConstants.ISSUE_LINKS,
-				IssueFieldConstants.ISSUE_TYPE,
-// For issue #65
-//				IssueFieldConstants.AFFECTED_VERSIONS,
-//				IssueFieldConstants.FIX_FOR_VERSIONS,
-				IssueFieldConstants.PRIORITY,
-				IssueFieldConstants.PROJECT,
-				IssueFieldConstants.SECURITY,
-				IssueFieldConstants.STATUS,
-				IssueFieldConstants.SUBTASKS,
-				IssueFieldConstants.THUMBNAIL,
-				IssueFieldConstants.UPDATED,
-				IssueFieldConstants.VOTES,
-				IssueFieldConstants.WORKRATIO
+                ATTACHMENT,
+                COMMENT,
+                COMPONENTS,
+                CREATED,
+                TIMETRACKING,
+                TIME_ORIGINAL_ESTIMATE,
+                TIME_ESTIMATE,
+                TIME_SPENT,
+                AGGREGATE_TIME_ORIGINAL_ESTIMATE,
+                AGGREGATE_TIME_ESTIMATE,
+                AGGREGATE_PROGRESS,
+                ISSUE_KEY,
+                ISSUE_LINKS,
+                ISSUE_TYPE,
+                PRIORITY,
+                PROJECT,
+                SECURITY,
+                STATUS,
+                SUBTASKS,
+                THUMBNAIL,
+                UPDATED,
+                VOTES,
+                WORKRATIO
 		);
 	}
 	
@@ -336,25 +347,23 @@ public class CommonPluginUtils {
 	 */
 	private static List<Field> getNonRequirableFields(){
 		return asFields(
-				IssueFieldConstants.ATTACHMENT,
-				IssueFieldConstants.COMMENT,
-				IssueFieldConstants.CREATED,
-				IssueFieldConstants.TIMETRACKING,
-				IssueFieldConstants.TIME_ORIGINAL_ESTIMATE,
-				IssueFieldConstants.PROGRESS,
-				IssueFieldConstants.AGGREGATE_TIME_ORIGINAL_ESTIMATE,
-				IssueFieldConstants.AGGREGATE_PROGRESS,
-				IssueFieldConstants.ISSUE_KEY,
-				IssueFieldConstants.ISSUE_LINKS,
-				IssueFieldConstants.ISSUE_TYPE,
-				IssueFieldConstants.PROJECT,
-				IssueFieldConstants.STATUS,
-				IssueFieldConstants.SUBTASKS,
-				IssueFieldConstants.THUMBNAIL,
-				IssueFieldConstants.UPDATED,
-				IssueFieldConstants.VOTES,
-				IssueFieldConstants.WORKRATIO,
-				IssueFieldConstants.SECURITY
+                CREATED,
+                TIMETRACKING,
+                TIME_ORIGINAL_ESTIMATE,
+                PROGRESS,
+                AGGREGATE_TIME_ORIGINAL_ESTIMATE,
+                AGGREGATE_PROGRESS,
+                ISSUE_KEY,
+                ISSUE_LINKS,
+                ISSUE_TYPE,
+                PROJECT,
+                STATUS,
+                SUBTASKS,
+                THUMBNAIL,
+                UPDATED,
+                VOTES,
+                WORKRATIO,
+                SECURITY
 		);
 	}
 	
@@ -376,20 +385,16 @@ public class CommonPluginUtils {
 	 */
 	private static List<Field> getNonValueFieldConditionFields(){
 		return asFields(
-				IssueFieldConstants.ATTACHMENT,
-				IssueFieldConstants.COMMENT,
-				IssueFieldConstants.COMPONENTS,
-				IssueFieldConstants.CREATED,
-				IssueFieldConstants.AFFECTED_VERSIONS,
-				IssueFieldConstants.FIX_FOR_VERSIONS,
-				IssueFieldConstants.ISSUE_KEY,
-				IssueFieldConstants.ISSUE_LINKS,
-				IssueFieldConstants.SUBTASKS,
-				IssueFieldConstants.THUMBNAIL,
-				IssueFieldConstants.TIMETRACKING,
-				IssueFieldConstants.UPDATED,
-				IssueFieldConstants.VOTES,
-				IssueFieldConstants.WORKRATIO
+                ATTACHMENT,
+                COMMENT,
+                CREATED,
+                ISSUE_KEY,
+                ISSUE_LINKS,
+                SUBTASKS,
+                THUMBNAIL,
+                TIMETRACKING,
+                UPDATED,
+                WORKRATIO
 		);
 	}
 	
@@ -423,7 +428,7 @@ public class CommonPluginUtils {
 	 * @return
 	 */
 	private static Comparator<Field> getComparator() {
-		ApplicationProperties ap = new ApplicationPropertiesImpl();
+		ApplicationProperties ap = ManagerFactory.getApplicationProperties();
 		I18nBean i18n = new I18nBean(ap.getDefaultLocale().getDisplayName());
 
 		return new NameComparatorEx(i18n); 

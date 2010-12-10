@@ -1,9 +1,9 @@
-<atlassian-plugin key="${project.groupId}.${project.artifactId}" plugins-version="2"
-	name="${project.name}">
+<atlassian-plugin key="${project.groupId}.${project.artifactId}"
+	plugins-version="2" name="${project.name}">
 	<plugin-info>
 		<description>${project.description}</description>
 		<version>${project.version}</version>
-        <vendor name="${project.organization.name}" url="${project.organization.url}" />
+		<vendor name="${project.organization.name}" url="${project.organization.url}" />
 	</plugin-info>
 
 	<!-- Custom Fields -->
@@ -34,7 +34,8 @@
 		name="Separation of Duties Condition"
 		class="com.innovalog.jmwe.plugins.conditions.WorkflowSeparationOfDutiesCondition">
 		<description>
-			Condition to prevent a user to perform a transition when he has already performed another.
+			Condition to prevent a user to perform a transition when
+			he has already performed another.
 		</description>
 
 		<condition-class>
@@ -53,7 +54,9 @@
 		name="Hide transition"
 		class="com.innovalog.jmwe.plugins.conditions.WorkflowNonInteractiveCondition">
 		<description>
-			Condition to hide a transition from the user (the transition can be triggered only programmatically or from a workflow function).
+			Condition to hide a transition from the user (the
+			transition can be triggered only programmatically or from a workflow
+			function).
 		</description>
 
 		<condition-class>
@@ -69,7 +72,8 @@
 		name="Field has single value Validator"
 		class="com.innovalog.jmwe.plugins.validators.WorkflowFieldHasSingleValueValidator">
 		<description>
-			Multi-select Field has not more than one value during transition.
+			Multi-select Field has not more than one value during
+			transition.
 		</description>
 
 		<validator-class>
@@ -258,8 +262,7 @@
 	</workflow-function>
 
 	<!-- From AssignToRoleMember Plugin -->
-	<workflow-function key="assigntorolemember"
-		name="Assign to role member"
+	<workflow-function key="assigntorolemember" name="Assign to role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToRoleMemberFunctionImpl">
 		<description>Assigns the issue to a role member.</description>
 
@@ -280,11 +283,11 @@
 			location="templates/jira/workflow/function/assigntorolemember-function-edit-params.vm" />
 	</workflow-function>
 
-	<workflow-function key="assigntolastrolemember"
-		name="Assign to last role member"
+	<workflow-function key="assigntolastrolemember" name="Assign to last role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToLastRoleMemberFunctionImpl">
 		<description>
-			Assigns the issue to the last user from the specified role
+			Assigns the issue to the last user from the specified
+			role
 			that had this issue assigned before.
 		</description>
 
@@ -309,7 +312,8 @@
 		name="Set issue security level based on user's project role"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowSetIssueSecurityFromRoleFunction">
 		<description>
-			Set the issue's Security Level to the specified level if the current user is in a specified Project Role.
+			Set the issue's Security Level to the specified level if
+			the current user is in a specified Project Role.
 		</description>
 
 		<function-class>
@@ -352,6 +356,28 @@
 			location="templates/jira/workflow/function/TransitionParentIssue-function-edit.vm" />
 	</workflow-function>
 
+	<workflow-function key="copyValueFromFieldToField-function"
+		name="Copy Value From Field to Field"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowCopyValueFromOtherFieldPostFunctionPluginFactory">
+		<description>Copies the value(s) of one field to another field. Can copy the value of the field before it was changed on the transition's screen.'
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.CopyValueFromOtherFieldPostFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+		<default>false</default>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/copyvaluefromfield-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/copyvaluefromfield-function-input.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/copyvaluefromfield-function-edit.vm" />
+	</workflow-function>
 	<!-- Reports -->
 
 	<!-- Portlets -->

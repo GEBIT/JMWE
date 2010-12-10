@@ -7,7 +7,6 @@ import org.apache.log4j.Logger;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.issue.util.IssueChangeHolder;
-import com.innovalog.googlecode.jsu.util.LogUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.user.User;
@@ -17,7 +16,7 @@ import com.opensymphony.workflow.WorkflowException;
  * 
  */
 public class SetFieldFromUserPropFunction extends AbstractPreserveChangesPostFunction {
-	private final Logger log = LogUtils.getGeneral();
+	private static final Logger log = Logger.getLogger(SetFieldFromUserPropFunction.class);
 
 	@SuppressWarnings("unchecked")
 	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
