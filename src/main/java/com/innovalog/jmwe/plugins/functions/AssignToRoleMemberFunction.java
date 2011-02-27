@@ -88,7 +88,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 				//Try to see if there is a user that has a following property:
 				// 1. name: [ProjectName]x[RoleName], value: default
 				// or 2. name: defaultAssignee[x], value: [ProjectName]x[RoleName]
-				// or 3. name: defaultAssignee, value: [ProjectKey]=>[RoleName], [ProjectKey]->[RoleName], ...
+				// or 3. name: defaultAssignee, value: [ProjectKey]->[RoleName], [ProjectKey]->[RoleName], ...
 				String propertyNameOrValue = project.getName() + "x" + projectRole.getName();
 				Iterator iterator = users.iterator();
 				userIterator: while (iterator.hasNext()) {
