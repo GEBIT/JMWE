@@ -1,5 +1,8 @@
 package com.innovalog.jmwe.plugins.functions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 import com.atlassian.jira.issue.ModifiedValue;
@@ -28,6 +31,8 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
         String fieldToKey = (String) args.get("destinationField");
         String oldValue = (String) args.get("oldValue");
         boolean bOldValue = oldValue != null && oldValue.equalsIgnoreCase("yes");
+        String appendValues = (String) args.get("appendValues");
+        boolean bAppendValues = appendValues != null && appendValues.equalsIgnoreCase("yes");
 
         Field fieldFrom = (Field) WorkflowUtils.getFieldFromKey(fieldFromKey);
         Field fieldTo = (Field) WorkflowUtils.getFieldFromKey(fieldToKey);
@@ -50,15 +55,48 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
             else
 	            sourceValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldFrom);
 
-            if (log.isDebugEnabled()) {
-                log.debug(
-                        String.format(
-                                "Copying value [%s] from issue %s field '%s' to '%s'",
-                                sourceValue, issue.getKey(),
-                                fieldFromName,
-                                fieldToName
-                        )
-                );
+            if (bAppendValues) {
+            	//get existing destination field value
+            	Object destValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldTo);
+            	if (destValue == null)
+            		destValue = Collections.EMPTY_LIST;
+            	if (! (destValue instanceof Collection))
+            	{
+            		log.error(String.format("Field '%s' is not multi-valued",fieldToName));
+            		return;
+            	}
+            	else
+            	{
+            		Collection newVal = new ArrayList();
+            		newVal.addAll((Collection)destValue);
+            		if (sourceValue instanceof Collection)
+            			newVal.addAll((Collection)sourceValue);
+            		else
+            			newVal.add(sourceValue);
+            		sourceValue = newVal;
+            	}
+	            if (log.isDebugEnabled())
+	                log.debug(
+	                        String.format(
+	                                "Adding value [%s] from issue %s field '%s' to '%s'",
+	                                sourceValue, issue.getKey(),
+	                                fieldFromName,
+	                                fieldToName
+	                        )
+	                );
+            }
+            else
+            {
+	            if (log.isDebugEnabled()) {
+	                log.debug(
+	                        String.format(
+	                                "Copying value [%s] from issue %s field '%s' to '%s'",
+	                                sourceValue, issue.getKey(),
+	                                fieldFromName,
+	                                fieldToName
+	                        )
+	                );
+	            }
             }
 
             // It set the value to field.

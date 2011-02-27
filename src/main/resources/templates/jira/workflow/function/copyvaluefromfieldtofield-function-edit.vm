@@ -14,7 +14,7 @@
 	        </select>
         <br><font size="1">Choose the source field.</font>
         <br><input type="checkbox" id="oldValue" name="oldValue" value="yes" 
-	        #if ($oldValue=='yes')
+	        #if ($oldValue && $oldValue=='yes')
 	        checked="yes"
 	        #end
 	        >Use value before current transition</input>
@@ -35,5 +35,11 @@
             #end
 	        </select>
         <br><font size="1">Choose the destination field.</font>
+        <br><input type="checkbox" id="appendValues" name="appendValues" value="yes" 
+	        #if ($appendValues && $appendValues=='yes')
+	        checked="yes"
+	        #end
+	        >Add source value(s) to destination field</input>
+        <br><font size="1">(applies only to multi-valued destination fields)</font>
     </td>
 </tr>

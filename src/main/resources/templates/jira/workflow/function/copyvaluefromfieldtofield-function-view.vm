@@ -1,3 +1,13 @@
+#if ($appendValues && $appendValues=='yes')
+Value of field
+#if(${val-sourceFieldSelected})
+    <b>${val-sourceFieldSelected.name}</b>
+#end
+will be added to field
+#if(${val-destinationFieldSelected})
+    <b>${val-destinationFieldSelected.name}</b>
+#end
+#else
 The Field 
 #if(${val-destinationFieldSelected})
     <b>${val-destinationFieldSelected.name}</b>
@@ -6,7 +16,8 @@ The Field
 #if(${val-sourceFieldSelected})
     <b>${val-sourceFieldSelected.name}</b>
 #end
-#if ($oldValue=='yes')
+#end
+#if ($oldValue && $oldValue=='yes')
  (using value before current transition)
 #end
 .
