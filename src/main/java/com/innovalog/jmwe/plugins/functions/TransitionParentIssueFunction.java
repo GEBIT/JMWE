@@ -31,10 +31,18 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 		return wm.getWorkflow(issue);
 	}
 
-	private static ActionDescriptor transitionFromName(Issue issue,String name) {
+	private static ActionDescriptor transitionFromName(Issue issue, String name) {
 		Collection<ActionDescriptor> actions = getWorkflow(issue).getAllActions();
 		for (ActionDescriptor ad : actions)
 			if (ad.getName().equals(name))
+				return ad;
+		return null;
+	}
+
+	private static ActionDescriptor transitionFromId(Issue issue, int id) {
+		Collection<ActionDescriptor> actions = getWorkflow(issue).getAllActions();
+		for (ActionDescriptor ad : actions)
+			if (ad.getId() ==id)
 				return ad;
 		return null;
 	}
@@ -64,7 +72,16 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 		try {
 			MutableIssue parentIssue = (MutableIssue) issue.getParentObject();
 			if (parentIssue != null) {
-				ActionDescriptor transition = transitionFromName(parentIssue,transitionName);
+				ActionDescriptor transition;
+				// try to convert transitionName into an int
+				try {
+					Integer transitionId = Integer.parseInt(transitionName);
+					transition = transitionFromId(parentIssue, transitionId);
+				} catch (NumberFormatException e) {
+					//not an int - must be a transition name
+					transition = transitionFromName(parentIssue, transitionName);
+				}
+				
 				if (transition == null) {
 					log.warn("Error while executing function : transition [" + transitionName + "] not found");
 					return;
@@ -82,8 +99,7 @@ public class TransitionParentIssueFunction extends AbstractPreserveChangesPostFu
 				ErrorCollection errorCollection = workflowTransitionUtil.validate();
 				printAnyErrors(parentIssue, errorCollection);
 
-				if (!errorCollection.hasAnyErrors())
-				{
+				if (!errorCollection.hasAnyErrors()) {
 					workflowTransitionUtil.progress();
 					ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
 				}

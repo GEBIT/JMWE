@@ -8,6 +8,6 @@
 #else
 		<input id="transition" name="transition" type="text" />
 #end
-        <br><font size="1">Type the name of the transition to trigger on the parent issue.</font>
+        <br><font size="1">Type the name or ID of the transition to trigger on the parent issue.</font>
     </td>
 </tr>
