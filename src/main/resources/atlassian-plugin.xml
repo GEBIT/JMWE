@@ -261,6 +261,29 @@
 			location="templates/jira/workflow/function/copyfieldvaluetoparent-function-edit.vm" />
 	</workflow-function>
 
+	<workflow-function key="CopyFieldValueFromParent-function"
+		name="Set Field Value from Parent"
+		class="com.innovalog.jmwe.plugins.functions.WorkflowCopyFieldValueFromParentFunction">
+		<description>
+			Set the value(s) of a field from the issue's parent
+		</description>
+
+		<function-class>
+			com.innovalog.jmwe.plugins.functions.CopyFieldValueFromParentFunction
+		</function-class>
+
+		<orderable>true</orderable>
+		<unique>false</unique>
+		<deletable>true</deletable>
+
+		<resource type="velocity" name="view"
+			location="templates/jira/workflow/function/copyfieldvaluefromparent-function-view.vm" />
+		<resource type="velocity" name="input-parameters"
+			location="templates/jira/workflow/function/copyfieldvaluefromparent-function-edit.vm" />
+		<resource type="velocity" name="edit-parameters"
+			location="templates/jira/workflow/function/copyfieldvaluefromparent-function-edit.vm" />
+	</workflow-function>
+
 	<!-- From AssignToRoleMember Plugin -->
 	<workflow-function key="assigntorolemember" name="Assign to role member"
 		class="com.innovalog.jmwe.plugins.functions.WorkflowAssignToRoleMemberFunctionImpl">
