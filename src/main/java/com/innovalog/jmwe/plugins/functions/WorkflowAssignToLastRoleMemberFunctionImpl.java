@@ -82,6 +82,7 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 				
 		velocityParams.put("includeReporter", functionDescriptor.getArgs().get("includeReporter"));
 		velocityParams.put("skipIfAssignee", functionDescriptor.getArgs().get("skipIfAssignee"));
+		velocityParams.put("includeCurrentAssignee", functionDescriptor.getArgs().get("includeCurrentAssignee"));
 		velocityParams.put("projectrole",id);
 		if(projectRole!=  null)
 		{
@@ -105,6 +106,11 @@ public class WorkflowAssignToLastRoleMemberFunctionImpl extends AbstractWorkflow
 			params.put("skipIfAssignee", this.extractSingleParam(functionParams,"skipIfAssignee"));
 		} catch (IllegalArgumentException e) {
 			params.put("skipIfAssignee", "no");
+		}
+		try {
+			params.put("includeCurrentAssignee", this.extractSingleParam(functionParams,"includeCurrentAssignee"));
+		} catch (IllegalArgumentException e) {
+			params.put("includeCurrentAssignee", "no");
 		}
 		return params;
 	}

@@ -1,10 +1,13 @@
 #if (${projectrolename})
-Assign the issue to the last user from the <b>${projectrolename}</b> role that had this issue assigned before
-#if (${includeReporter}=="yes")
- or who reported it
+Assign the issue to the last user from the <b>${projectrolename}</b> role who had this issue assigned before
+#if (${includeReporter} && ${includeReporter}=="yes")
+, or who reported it
+#end
+#if ($includeCurrentAssignee && $includeCurrentAssignee=="yes")
+ , or is already assigned to the issue
 #end
 #if ($skipIfAssignee && $skipIfAssignee=="yes")
- (unless user selects an Assignee)
+ (unless user selects an Assignee in the transition screen)
 #end
 .
 #else

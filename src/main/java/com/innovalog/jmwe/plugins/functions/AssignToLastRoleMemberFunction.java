@@ -31,23 +31,29 @@ import webwork.action.ServletActionContext;
 import com.atlassian.core.user.UserUtils;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.IssueFieldConstants;
+import com.atlassian.jira.issue.ModifiedValue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.changehistory.ChangeHistory;
 import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
+import com.atlassian.jira.issue.util.IssueChangeHolder;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.user.EntityNotFoundException;
 import com.opensymphony.user.User;
+import com.opensymphony.workflow.WorkflowException;
 
 // This post function will assign the issue to the first default user of teh specified role 
-public class AssignToLastRoleMemberFunction extends AbstractJiraFunctionProvider
+public class AssignToLastRoleMemberFunction extends AbstractPreserveChangesPostFunction
 {
     private static final Category log = Category.getInstance(AssignToLastRoleMemberFunction.class);
 
-    public void execute(Map transientVars, Map args, PropertySet ps)
+    protected void executeFunction(
+            Map<String, Object> transientVars, Map<String, String> args,
+            PropertySet ps, IssueChangeHolder holder
+    ) throws WorkflowException
     {
     	HttpServletRequest request = ServletActionContext.getRequest();
     	if (request!=null)
@@ -98,6 +104,28 @@ public class AssignToLastRoleMemberFunction extends AbstractJiraFunctionProvider
         }
         
         if (users != null) {
+        	//first check current assignee
+        	if (args.get("includeCurrentAssignee") != null && ((String)args.get("includeCurrentAssignee")).equalsIgnoreCase("yes"))
+        	{
+    	        MutableIssue issue = (MutableIssue) transientVars.get("issue");        
+                if (issue.getModifiedFields().containsKey(IssueFieldConstants.ASSIGNEE))
+                {
+    	            ModifiedValue mv = (ModifiedValue) issue.getModifiedFields().get(IssueFieldConstants.ASSIGNEE);
+    				if (mv != null)
+    					user = (User)mv.getOldValue();
+    	            else
+    	            	user = issue.getAssignee();
+                }
+                else
+                	user = issue.getAssignee();
+        		if (user!=null && users.contains(user))
+        		{
+        			// Assign the issue
+        	        issue.setAssignee(user);
+        			return;       			
+        		}
+        	}
+
         	ChangeHistoryManager changeHistoryManager = (ChangeHistoryManager)ComponentManager.getComponentInstanceOfType(ChangeHistoryManager.class);
         	//changeHistory represents each changeset of the issue. we get each field changed per changeset below in changeItemBeans
         	List changeHistory = changeHistoryManager.getChangeHistoriesForUser(genericIssue, null);
@@ -141,7 +169,6 @@ public class AssignToLastRoleMemberFunction extends AbstractJiraFunctionProvider
         			// Assign the issue
         	        MutableIssue issue = (MutableIssue) transientVars.get("issue");        
         	        issue.setAssignee(user);
-        	        issue.store();
         			return;
         		}        		
         	}
@@ -154,7 +181,6 @@ public class AssignToLastRoleMemberFunction extends AbstractJiraFunctionProvider
         		{
         			// Assign the issue
         	        issue.setAssignee(user);
-        	        issue.store();
         			return;       			
         		}
         	}

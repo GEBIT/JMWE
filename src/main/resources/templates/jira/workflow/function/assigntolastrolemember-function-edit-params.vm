@@ -12,11 +12,23 @@
     </td>
     <td bgcolor="ffffff" nowrap>
         <input type="checkbox" id="includeReporter" name="includeReporter" value="yes" 
-	        #if ($includeReporter=='yes')
+	        #if ($includeReporter && $includeReporter=='yes')
 	        checked="yes"
 	        #end
 	        >Include Reporter</input>
 	        <br><font size="1">Check Reporter in addition to previous assignees.</font>
+    </td>
+</tr>
+<tr bgcolor=ffffff>
+    <td align="right" valign="top" bgcolor="fffff0">
+    </td>
+    <td bgcolor="ffffff" nowrap>
+        <input type="checkbox" id="includeCurrentAssignee" name="includeCurrentAssignee" value="yes" 
+	        #if ($includeCurrentAssignee  && $includeCurrentAssignee=='yes')
+	        checked="yes"
+	        #end
+	        >Include Current Assignee</input>
+	        <br><font size="1">Check current Assignee in addition to previous assignees.</font>
     </td>
 </tr>
 <tr bgcolor=ffffff>
