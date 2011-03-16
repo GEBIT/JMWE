@@ -379,7 +379,24 @@ public class WorkflowUtils {
 				} else if (value instanceof Version) {
                     issue.setAffectedVersions(Arrays.asList((Version) value));
 				} else if (value instanceof Collection) {
-					issue.setAffectedVersions((Collection) value);
+					//convert each value to a Version
+					VersionManager versionManager = ComponentManager.getInstance().getVersionManager();
+					ArrayList<Version> newVal = new ArrayList<Version>(((Collection)value).size());
+					for (Object o : (Collection)value)
+					{
+						if (o instanceof Version)
+							newVal.add((Version)o);
+						else
+						{
+							Version v = versionManager.getVersion(issue.getProjectObject().getId(), (String) o);
+							if (v != null) {
+								newVal.add(v);
+							} else {
+								throw new IllegalArgumentException("Illegal affected version value: "+o.toString());
+							}
+						}
+					}
+					issue.setAffectedVersions(newVal);
 				} else {
 					throw new IllegalArgumentException("Wrong affected version value");
 				}
@@ -403,16 +420,31 @@ public class WorkflowUtils {
                 } else if (value instanceof String) {
                     ProjectComponentManager componentManager = ComponentManager.getInstance().getProjectComponentManager();
                     ProjectComponent v = componentManager.findByComponentName(
-                            issue.getProjectObject().getId(), (String) value
-                    );
-
+                            issue.getProjectObject().getId(), (String) value);
                     if (v != null) {
                         issue.setComponents(Arrays.asList(v.getGenericValue()));
                     }
                 } else if (value instanceof GenericValue) {
                     issue.setComponents(Arrays.asList((GenericValue) value));
                 } else if (value instanceof Collection) {
-                    issue.setComponents((Collection) value);
+					//convert each value to a Component
+                    ProjectComponentManager componentManager = ComponentManager.getInstance().getProjectComponentManager();
+					ArrayList<GenericValue> newVal = new ArrayList<GenericValue>(((Collection)value).size());
+					for (Object o : (Collection)value)
+					{
+						if (o instanceof GenericValue)
+							newVal.add((GenericValue)o);
+						else
+						{
+							ProjectComponent v = componentManager.findByComponentName(issue.getProjectObject().getId(), (String) o);
+							if (v != null) {
+								newVal.add(v.getGenericValue());
+							} else {
+								throw new IllegalArgumentException("Illegal Component value: "+o.toString());
+							}
+						}
+					}
+                     issue.setComponents(newVal);
                 } else {
                     throw new IllegalArgumentException("Wrong component value");
                 }
@@ -429,7 +461,24 @@ public class WorkflowUtils {
 				} else if (value instanceof Version) {
                     issue.setFixVersions(Arrays.asList((Version) value));
 				} else if (value instanceof Collection) {
-					issue.setFixVersions((Collection) value);
+					//convert each value to a Version
+					VersionManager versionManager = ComponentManager.getInstance().getVersionManager();
+					ArrayList<Version> newVal = new ArrayList<Version>(((Collection)value).size());
+					for (Object o : (Collection)value)
+					{
+						if (o instanceof Version)
+							newVal.add((Version)o);
+						else
+						{
+							Version v = versionManager.getVersion(issue.getProjectObject().getId(), (String) o);
+							if (v != null) {
+								newVal.add(v);
+							} else {
+								throw new IllegalArgumentException("Illegal affected version value: "+o.toString());
+							}
+						}
+					}
+					issue.setFixVersions(newVal);
 				} else {
 					throw new IllegalArgumentException("Wrong fix version value");
 				}
