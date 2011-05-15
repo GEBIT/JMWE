@@ -124,7 +124,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 				if (assignToUser == null) {
 					assignToUser = (User)users.iterator().next();
 					StringBuffer sb = new StringBuffer();
-			          log.warn(sb.append("AssignToRoleMember was not able to find a user with the property named ").append(propertyNameOrValue).append(" and value set to \"default\". First user from the role will be used."));					
+			          log.info(sb.append("AssignToRoleMember was not able to find a user with the property named ").append(propertyNameOrValue).append(" and value set to \"default\". First user from the role will be used."));
 				}
 								
 								
@@ -136,7 +136,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 		}
 		if (assignToUser == null) {
 			StringBuffer sb = new StringBuffer();
-        	log.warn(sb.append("There is no default user assigned in the project role ").append(projectRole.getName()).append(" (no assignment will be made)").toString());
+        	log.info(sb.append("There is no default user assigned in the project role ").append(projectRole.getName()).append(" (no assignment will be made)").toString());
         	return;
         }
 		
