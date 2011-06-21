@@ -6,6 +6,7 @@ package com.innovalog.jmwe.plugins.conditions;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.ofbiz.core.entity.GenericValue;
 
 import com.atlassian.jira.ComponentManager;
@@ -21,6 +22,7 @@ import com.opensymphony.workflow.WorkflowException;
  *
  */
 public class PreviousStatusCondition extends AbstractJiraCondition {
+	private Logger log = Logger.getLogger(PreviousStatusCondition.class);
 
 	/* (non-Javadoc)
 	 * @see com.opensymphony.workflow.Condition#passesCondition(java.util.Map, java.util.Map, com.opensymphony.module.propertyset.PropertySet)
@@ -30,6 +32,8 @@ public class PreviousStatusCondition extends AbstractJiraCondition {
         Issue genericIssue =  (Issue) transientVars.get("issue");
         String statusToLookFor = (String)args.get("jira.previousstatus");
         boolean mostRecentStatusOnly = args.get("jira.mostRecentStatusOnly").equals("yes");
+        
+        log.debug("Issue "+genericIssue.getKey()+": looking for " + statusToLookFor + " previous status");
         
        	ChangeHistoryManager changeHistoryManager = (ChangeHistoryManager)ComponentManager.getComponentInstanceOfType(ChangeHistoryManager.class);
     	//changeHistory represents each changeset of the issue. we get each field changed per changeset below in changeItemBeans
