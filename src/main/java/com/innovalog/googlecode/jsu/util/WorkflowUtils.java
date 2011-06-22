@@ -210,8 +210,10 @@ public class WorkflowUtils {
                     retVal = issue.getProjectObject();
 				} else if (fieldId.equals(IssueFieldConstants.SECURITY)) {
 					retVal = issue.getSecurityLevel();
-				} else if (fieldId.equals(IssueFieldConstants.TIME_ESTIMATE)) {
-					retVal = issue.getEstimate();
+                } else if (fieldId.equals(IssueFieldConstants.TIME_ESTIMATE)) {
+                    retVal = issue.getEstimate();
+                } else if (fieldId.equals(IssueFieldConstants.TIME_ORIGINAL_ESTIMATE)) {
+                    retVal = issue.getOriginalEstimate();
 				} else if (fieldId.equals(IssueFieldConstants.TIME_SPENT)) {
 					retVal = issue.getTimeSpent();
 				} else if (fieldId.equals(IssueFieldConstants.ASSIGNEE)) {
@@ -660,6 +662,24 @@ public class WorkflowUtils {
                 } else {
                     throw new UnsupportedOperationException("Wrong value type for setting 'Description'");
                 }
+            } else if (fieldId.equals(IssueFieldConstants.TIME_SPENT)) {
+                if ((value == null) || (value instanceof Long)) {
+                    issue.setTimeSpent((Long) value);
+                } else {
+                    throw new UnsupportedOperationException("Wrong value type for setting 'Time Spent' (Long expected)");
+                }
+            } else if (fieldId.equals(IssueFieldConstants.TIME_ESTIMATE)) {
+                if ((value == null) || (value instanceof Long)) {
+                    issue.setEstimate((Long) value);
+                } else {
+                    throw new UnsupportedOperationException("Wrong value type for setting 'Time Estimate' (Long expected)");
+                }
+            } else if (fieldId.equals(IssueFieldConstants.TIME_ORIGINAL_ESTIMATE)) {
+                if ((value == null) || (value instanceof Long)) {
+                    issue.setOriginalEstimate((Long) value);
+                } else {
+                    throw new UnsupportedOperationException("Wrong value type for setting 'Original Estimate' (Long expected)");
+                }
             } else if (fieldId.equals(IssueFieldConstants.ENVIRONMENT)) {
                 if ((value == null) || (value instanceof String)) {
                     issue.setEnvironment((String) value);
@@ -717,7 +737,7 @@ public class WorkflowUtils {
 	}
 
 	/**
-	 * @param group
+	 * @param groups
 	 * @param splitter
 	 * @return a String with the groups selected.
 	 * 
