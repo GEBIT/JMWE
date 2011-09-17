@@ -34,14 +34,16 @@ public class NonInteractiveCondition extends AbstractJiraCondition {
 		catch(Exception e)
 		{
 			StackTraceElement[] stack = e.getStackTrace();
+			boolean passes = true;
 			for (StackTraceElement entry : stack)
 			{
-				if (entry.getClassName().equals("com.opensymphony.workflow.AbstractWorkflow") && entry.getMethodName().equals("getAvailableActions"))
-					return false;
+ 				if (entry.getClassName().equals("com.opensymphony.workflow.AbstractWorkflow") && entry.getMethodName().equals("getAvailableActions"))
+					passes = false;
+				else if (entry.getClassName().equals("com.atlassian.jira.issue.IssueUtilsBean") && entry.getMethodName().equals("isValidAction"))
+					return true;
 			}
+			return passes;
 		}
-
-		return true;
 	}
 
 }
