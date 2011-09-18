@@ -8,7 +8,7 @@
 	<groupId>com.innovalog.jmwe</groupId>
 	<artifactId>jira-misc-workflow-extensions</artifactId>
 	<name>JIRA Misc Workflow Extensions</name>
-	<version>2.4.2</version>
+	<version>2.5.0</version>
 	<packaging>atlassian-plugin</packaging>
 
 	<scm>
@@ -25,8 +25,8 @@
 			Change this property to compile your plugin against different JIRA
 			versions.
 		-->
-		<jira.version>4.3</jira.version>
-		<jira.data.version>4.3</jira.data.version>
+		<jira.version>4.4</jira.version>
+		<jira.data.version>4.4</jira.data.version>
 	</properties>
 
 	<description>Several JIRA workflow extensions</description>
@@ -110,4 +110,11 @@
 			<url>dav:https://maven.atlassian.com/contrib-snapshot</url>
 		</snapshotRepository>
 	</distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>atlassian</id>
+            <url>https://maven.atlassian.com/repository/public</url>
+        </repository>
+    </repositories>
 </project>

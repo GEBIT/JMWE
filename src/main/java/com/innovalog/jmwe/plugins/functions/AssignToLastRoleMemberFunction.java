@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2002-2004
- * All rights reserved.
- */
-
-/*
- * Changelog:
- * 20080129: brian.hegeman@gmail.com; changed reassign logic to use oldvalue of assignee instead of newvalue
- * 		Fixes bug where initial assignee on an issue wasn't found in searching through history (as user is not *new* assignee).
- * 		In current implementation, a user who appears only in newvalue not oldvalue of assignee in change history is the *current* assignee,
- * 		this should only have an impact if the current assignee and a previous assignee are both members of the specified. In this case
- * 		the previous assignee will be assigned the issue (though the current user is also in the role). As the plugin is called 
- * 		"AssignToLastRoleMember", this seems acceptable.
- * 
- * 
- */
 package com.innovalog.jmwe.plugins.functions;
 
 import java.util.Collection;
@@ -45,7 +29,7 @@ import com.opensymphony.user.EntityNotFoundException;
 import com.opensymphony.user.User;
 import com.opensymphony.workflow.WorkflowException;
 
-// This post function will assign the issue to the first default user of teh specified role 
+// This post function will assign the issue to the first default user of the specified role
 public class AssignToLastRoleMemberFunction extends AbstractPreserveChangesPostFunction
 {
     private static final Category log = Category.getInstance(AssignToLastRoleMemberFunction.class);
