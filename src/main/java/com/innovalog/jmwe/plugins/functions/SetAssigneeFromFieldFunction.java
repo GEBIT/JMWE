@@ -18,12 +18,17 @@ import com.opensymphony.workflow.WorkflowException;
  */
 public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
 	private static final Logger log = Logger.getLogger(SetAssigneeFromFieldFunction.class);
+    private final WorkflowUtils workflowUtils;
 
-	@SuppressWarnings("unchecked")
+    public SetAssigneeFromFieldFunction(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
+    @SuppressWarnings("unchecked")
 	public void execute(Map transientVars, Map args, PropertySet ps) throws WorkflowException {
 		log.debug("");
 		String sourceFieldKey = (String) args.get(WorkflowSetAssigneeFromFieldFunction.FIELD);
-		Field fieldFrom = (Field) WorkflowUtils.getFieldFromKey(sourceFieldKey);
+		Field fieldFrom = (Field) workflowUtils.getFieldFromKey(sourceFieldKey);
 		if (fieldFrom == null) {
 			log.warn(String.format("Unable to find field with key [%s]", sourceFieldKey));
 			return;
@@ -31,7 +36,7 @@ public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
 			if (sourceValue == null) {
 				if (log.isDebugEnabled()) {
 					log.debug(String.format("Value of field [%s] is null, setting Assignee to Unassigned on issue [%s]", fieldFrom.getName(), issue.getKey()));

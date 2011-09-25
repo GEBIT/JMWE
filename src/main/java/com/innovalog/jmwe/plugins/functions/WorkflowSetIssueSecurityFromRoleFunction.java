@@ -15,7 +15,6 @@ import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
-import com.innovalog.googlecode.jsu.util.WorkflowFactoryUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
 

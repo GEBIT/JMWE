@@ -1,28 +1,13 @@
 package com.innovalog.jmwe.plugins.functions;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.log4j.Logger;
-
-import webwork.action.ActionContext;
-import webwork.action.factory.ParameterMap;
-
-import com.atlassian.core.action.ActionDispatcher;
-import com.atlassian.jira.ComponentManager;
-import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
-import com.atlassian.jira.workflow.JiraWorkflow;
-import com.atlassian.jira.workflow.WorkflowManager;
-import com.innovalog.googlecode.jsu.util.CommonPluginUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowFactoryUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
-import com.opensymphony.workflow.loader.ActionDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
+import org.apache.log4j.Logger;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class WorkflowTransitionParentIssueFunction extends AbstractWorkflowPluginFactory implements WorkflowPluginFunctionFactory {
 	private Logger log = Logger.getLogger(WorkflowTransitionParentIssueFunction.class);

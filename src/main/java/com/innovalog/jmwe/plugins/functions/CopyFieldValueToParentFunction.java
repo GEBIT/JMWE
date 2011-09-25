@@ -23,11 +23,16 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 {
 	private Logger log = Logger.getLogger(CopyFieldValueToParentFunction.class);
 	private static final String FIELD = "field";
+    private final WorkflowUtils workflowUtils;
 
-	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder) throws WorkflowException
+    public CopyFieldValueToParentFunction(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
+    public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder) throws WorkflowException
 	{
 		String fieldKey = (String) args.get(FIELD);
-		Field field = (Field) WorkflowUtils.getFieldFromKey(fieldKey);
+		Field field = (Field) workflowUtils.getFieldFromKey(fieldKey);
 		if (field == null)
 		{
 			log.error("Error while executing function : field [" + fieldKey + "] not found");
@@ -39,7 +44,7 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 		try
 		{
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = WorkflowUtils.getFieldValueFromIssue(issue, field);
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, field);
 
 			// get the parent issue
 			MutableIssue parentIssue = (MutableIssue) issue.getParentObject();
@@ -47,7 +52,7 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 			{
 				if (!indexingPreviouslyEnabled)
 					ImportUtils.setIndexIssues(true);
-				WorkflowUtils.setFieldValue(parentIssue, field, sourceValue, new DefaultIssueChangeHolder());
+				workflowUtils.setFieldValue(parentIssue, field, sourceValue, new DefaultIssueChangeHolder());
 
 				// trigger an edit on the issue
 				Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue,

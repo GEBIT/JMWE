@@ -17,8 +17,13 @@ import com.opensymphony.workflow.WorkflowException;
  */
 public class SetFieldFromUserPropFunction extends AbstractPreserveChangesPostFunction {
 	private static final Logger log = Logger.getLogger(SetFieldFromUserPropFunction.class);
+    private final WorkflowUtils workflowUtils;
 
-	@SuppressWarnings("unchecked")
+    public SetFieldFromUserPropFunction(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
+    @SuppressWarnings("unchecked")
 	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
 			throws WorkflowException {
 		log.debug("");
@@ -40,7 +45,7 @@ public class SetFieldFromUserPropFunction extends AbstractPreserveChangesPostFun
 				"jira.meta." + sourcePropKey);
 
 		String sourceFieldKey = (String) args.get(WorkflowSetFieldFromUserPropFunction.FIELD);
-		Field fieldFrom = (Field) WorkflowUtils.getFieldFromKey(sourceFieldKey);
+		Field fieldFrom = (Field) workflowUtils.getFieldFromKey(sourceFieldKey);
 		if (fieldFrom == null) {
 			log.warn(String.format("Unable to find field with key [%s]", sourceFieldKey));
 			throw new WorkflowException(String.format("Unable to find field with key [%s]", sourceFieldKey));
@@ -48,7 +53,7 @@ public class SetFieldFromUserPropFunction extends AbstractPreserveChangesPostFun
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			WorkflowUtils.setFieldValue(issue, fieldFrom, value, holder);
+			workflowUtils.setFieldValue(issue, fieldFrom, value, holder);
 			issue.store();
 
 			if (log.isDebugEnabled()) {

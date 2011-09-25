@@ -10,7 +10,7 @@ import java.util.Set;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.fields.Field;
 import com.innovalog.googlecode.jsu.annotation.Argument;
-import com.innovalog.googlecode.jsu.util.CommonPluginUtils;
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowException;
@@ -27,15 +27,19 @@ public class FieldHasSingleValueValidator extends GenericValidator {
 	@Argument("jira.excludingSubtasks")
 	private String excludingSubtasks;
 
-	/* (non-Javadoc)
-	 * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
-	 */
+    public FieldHasSingleValueValidator(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        super(workflowUtils, fieldCollectionsUtils);
+    }
+
+    /* (non-Javadoc)
+      * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
+      */
 	@Override
 	protected void validate() throws InvalidInputException, WorkflowException {
-		Field field = WorkflowUtils.getFieldFromKey(fieldKey);
+		Field field = workflowUtils.getFieldFromKey(fieldKey);
 		final Issue issue = getIssue();
-		Object value = WorkflowUtils.getFieldValueFromIssue(issue, field);
-		if (value instanceof Collection && CommonPluginUtils.isIssueHasField(issue, field) && ((Collection)value).size() > 1)
+		Object value = workflowUtils.getFieldValueFromIssue(issue, field);
+		if (value instanceof Collection && fieldCollectionsUtils.isIssueHasField(issue, field) && ((Collection)value).size() > 1)
 			if (excludingSubtasks != null && excludingSubtasks.equals("yes"))
 				//we should look at subtasks and exclude values coming from their corresponding field
 			{
@@ -43,10 +47,10 @@ public class FieldHasSingleValueValidator extends GenericValidator {
 				//iterate through subtasks
 				for (Object subtask : issue.getSubTaskObjects())
 				{
-					if (CommonPluginUtils.isIssueHasField((Issue)subtask, field))
+					if (fieldCollectionsUtils.isIssueHasField((Issue)subtask, field))
 					{
 						//get value of field
-						Object subtaskValue = WorkflowUtils.getFieldValueFromIssue((Issue)subtask, field);
+						Object subtaskValue = workflowUtils.getFieldValueFromIssue((Issue)subtask, field);
 						if (subtaskValue instanceof Collection)
 							//remove values from subtask field
 							values.removeAll((Collection) subtaskValue);

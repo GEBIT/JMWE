@@ -3,16 +3,12 @@
  */
 package com.innovalog.jmwe.plugins.validators;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
-
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.ModifiedValue;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
 import com.innovalog.googlecode.jsu.annotation.Argument;
-import com.innovalog.googlecode.jsu.util.CommonPluginUtils;
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowException;
@@ -23,19 +19,22 @@ import com.opensymphony.workflow.WorkflowException;
  */
 public class FieldChangedValidator extends GenericValidator
 {
-
 	@Argument("fieldKey")
 	private String fieldKey;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
-	 */
+    public FieldChangedValidator(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        super(workflowUtils, fieldCollectionsUtils);
+    }
+
+    /*
+      * (non-Javadoc)
+      *
+      * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
+      */
 	@Override
 	protected void validate() throws InvalidInputException, WorkflowException
 	{
-		Field field = WorkflowUtils.getFieldFromKey(fieldKey);
+		Field field = workflowUtils.getFieldFromKey(fieldKey);
 		final Issue issue = getIssue();
 		MutableIssue mu = null;
 		if (issue instanceof MutableIssue)

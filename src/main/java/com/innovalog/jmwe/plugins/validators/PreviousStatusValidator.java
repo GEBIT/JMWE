@@ -5,6 +5,8 @@ package com.innovalog.jmwe.plugins.validators;
 
 import java.util.List;
 
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import org.ofbiz.core.entity.GenericValue;
 
 import com.atlassian.jira.ComponentManager;
@@ -27,9 +29,13 @@ public class PreviousStatusValidator extends GenericValidator {
 	@Argument("jira.mostRecentStatusOnly")
 	private String mostRecentOnlyString;
 
-	/* (non-Javadoc)
-	 * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
-	 */
+    public PreviousStatusValidator(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        super(workflowUtils, fieldCollectionsUtils);
+    }
+
+    /* (non-Javadoc)
+      * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
+      */
 	@Override
 	protected void validate() throws InvalidInputException, WorkflowException {
 		final Issue genericIssue = getIssue();

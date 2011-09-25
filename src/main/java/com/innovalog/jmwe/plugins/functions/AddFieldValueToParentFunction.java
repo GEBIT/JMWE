@@ -24,11 +24,16 @@ import com.opensymphony.workflow.WorkflowException;
 public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFunction {
 	private Logger log = Logger.getLogger(AddFieldValueToParentFunction.class);
 	private static final String FIELD = "field";
+    private final WorkflowUtils workflowUtils;
 
-	public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
+    public AddFieldValueToParentFunction(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
+    public void executeFunction(Map transientVars, Map args, PropertySet ps, IssueChangeHolder holder)
 			throws WorkflowException {
 		String fieldKey = (String) args.get(FIELD);
-		Field field = (Field) WorkflowUtils.getFieldFromKey(fieldKey);
+		Field field = (Field) workflowUtils.getFieldFromKey(fieldKey);
 		if (field == null) {
 			log.warn("Error while executing function : field [" + fieldKey
 					+ "] not found");
@@ -39,7 +44,7 @@ public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFu
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = WorkflowUtils.getFieldValueFromIssue(issue,
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue,
 					field);
 			if (sourceValue != null && sourceValue instanceof Collection) {
 				// get the parent issue
@@ -47,7 +52,7 @@ public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFu
 				if (parentIssue != null)
 				{
 					//get parent issue's field value
-					Object parentValue = WorkflowUtils.getFieldValueFromIssue(parentIssue,field);
+					Object parentValue = workflowUtils.getFieldValueFromIssue(parentIssue,field);
 					if (parentValue == null)
 						parentValue = new ArrayList();
 					if (parentValue instanceof Collection)
@@ -55,7 +60,7 @@ public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFu
 						if (!indexingPreviouslyEnabled)
 							ImportUtils.setIndexIssues(true);
 						((Collection)parentValue).addAll((Collection)sourceValue);
-						WorkflowUtils.setFieldValue(parentIssue, field, parentValue, new DefaultIssueChangeHolder());
+						workflowUtils.setFieldValue(parentIssue, field, parentValue, new DefaultIssueChangeHolder());
 						
 						//trigger an edit on the issue
 						Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue, "remoteUser", this.getCaller(transientVars, args));

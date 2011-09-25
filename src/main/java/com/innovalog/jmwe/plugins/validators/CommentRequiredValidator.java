@@ -12,6 +12,7 @@ import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.workflow.WorkflowTransitionUtil;
 import com.innovalog.googlecode.jsu.annotation.Argument;
 import com.innovalog.googlecode.jsu.annotation.TransientVariable;
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.user.EntityNotFoundException;
 import com.opensymphony.user.Group;
@@ -27,7 +28,7 @@ import com.opensymphony.workflow.WorkflowException;
  *
  */
 public class CommentRequiredValidator extends GenericValidator {
-	
+
 	@TransientVariable(WorkflowTransitionUtil.FIELD_COMMENT)
 	private String strComment;
 	
@@ -40,9 +41,13 @@ public class CommentRequiredValidator extends GenericValidator {
 	@TransientVariable("context")
 	private WorkflowContext context;
 
-	/* (non-Javadoc)
-	 * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
-	 */
+    public CommentRequiredValidator(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        super(workflowUtils, fieldCollectionsUtils);
+    }
+
+    /* (non-Javadoc)
+      * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
+      */
 	@Override
 	protected void validate() throws InvalidInputException, WorkflowException {
 		//JMWE-10
@@ -71,7 +76,7 @@ public class CommentRequiredValidator extends GenericValidator {
     			
     			// If there aren't groups selected, hidGroupsList is equal to "".
     			// And groupsSelected will be an empty collection.
-    			Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+    			Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
     			
     			Iterator it = groupsSelected.iterator();
     			while(it.hasNext()){

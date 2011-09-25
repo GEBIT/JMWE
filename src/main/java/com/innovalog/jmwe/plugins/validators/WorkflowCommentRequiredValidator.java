@@ -21,10 +21,15 @@ import com.opensymphony.workflow.loader.ValidatorDescriptor;
  */
 public class WorkflowCommentRequiredValidator extends
 		AbstractWorkflowPluginFactory implements WorkflowPluginValidatorFactory {
+    private final WorkflowUtils workflowUtils;
 
-	/* (non-Javadoc)
-	 * @see com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory#getVelocityParamsForEdit(java.util.Map, com.opensymphony.workflow.loader.AbstractDescriptor)
-	 */
+    public WorkflowCommentRequiredValidator(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
+    /* (non-Javadoc)
+      * @see com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory#getVelocityParamsForEdit(java.util.Map, com.opensymphony.workflow.loader.AbstractDescriptor)
+      */
 	@Override
 	protected void getVelocityParamsForEdit(Map velocityParams,
 			AbstractDescriptor descriptor) {
@@ -37,12 +42,12 @@ public class WorkflowCommentRequiredValidator extends
 		velocityParams.remove("val-groupsList");
 		
 		String strGroupsSelected = (String)args.get("hidGroupsList");
-		Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+		Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
 		
 		Collection groups = GroupUtils.getGroups();
 		groups.removeAll(groupsSelected);
 		
-		velocityParams.put("val-hidGroupsList", WorkflowUtils.getStringGroup(groupsSelected, WorkflowUtils.SPLITTER));
+		velocityParams.put("val-hidGroupsList", workflowUtils.getStringGroup(groupsSelected, WorkflowUtils.SPLITTER));
 		velocityParams.put("val-groupsList", Collections.unmodifiableCollection(groups));
 }
 
@@ -67,7 +72,7 @@ public class WorkflowCommentRequiredValidator extends
 		velocityParams.put("errorMessage", args.get("errorMessage"));
 
 		String strGroupsSelected = (String)args.get("hidGroupsList");
-		Collection groupsSelected = WorkflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+		Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
 		
 		velocityParams.put("val-groupsListSelected", Collections.unmodifiableCollection(groupsSelected));
 }

@@ -8,6 +8,8 @@ import java.util.Set;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.status.Status;
 import com.innovalog.googlecode.jsu.annotation.Argument;
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowException;
 
@@ -20,9 +22,13 @@ public class ParentStatusValidator extends GenericValidator {
 	@Argument("jira.parentstatuses")
 	private String parentStatuses;
 
-	/* (non-Javadoc)
-	 * @see com.opensymphony.workflow.Condition#passesCondition(java.util.Map, java.util.Map, com.opensymphony.module.propertyset.PropertySet)
-	 */
+    public ParentStatusValidator(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        super(workflowUtils, fieldCollectionsUtils);
+    }
+
+    /* (non-Javadoc)
+      * @see com.opensymphony.workflow.Condition#passesCondition(java.util.Map, java.util.Map, com.opensymphony.module.propertyset.PropertySet)
+      */
 	public void validate()
 			throws InvalidInputException, WorkflowException {
         Issue genericIssue =  getIssue();

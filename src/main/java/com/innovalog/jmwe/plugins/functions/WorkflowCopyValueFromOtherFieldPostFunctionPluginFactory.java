@@ -1,7 +1,5 @@
 package com.innovalog.jmwe.plugins.functions;
 
-import static com.innovalog.googlecode.jsu.util.WorkflowFactoryUtils.getFieldByName;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -10,7 +8,9 @@ import java.util.Map;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
-import com.innovalog.googlecode.jsu.util.CommonPluginUtils;
+import com.atlassian.jira.workflow.WorkflowUtil;
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
 
@@ -21,15 +21,23 @@ import com.opensymphony.workflow.loader.FunctionDescriptor;
  * @author Gustavo Martin.
  */
 public class WorkflowCopyValueFromOtherFieldPostFunctionPluginFactory extends AbstractWorkflowPluginFactory implements WorkflowPluginFunctionFactory {
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see com.googlecode.jsu.workflow.AbstractWorkflowPluginFactory#
-	 * getVelocityParamsForInput(java.util.Map)
-	 */
+    private final WorkflowUtils workflowUtils;
+    private final FieldCollectionsUtils fieldCollectionsUtils;
+
+    public WorkflowCopyValueFromOtherFieldPostFunctionPluginFactory(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        this.workflowUtils = workflowUtils;
+        this.fieldCollectionsUtils = fieldCollectionsUtils;
+    }
+
+    /*
+      * (non-Javadoc)
+      *
+      * @see com.googlecode.jsu.workflow.AbstractWorkflowPluginFactory#
+      * getVelocityParamsForInput(java.util.Map)
+      */
 	protected void getVelocityParamsForInput(Map velocityParams) {
-		List<Field> sourceFields = CommonPluginUtils.getCopyFromFields();
-		List<Field> destinationFields = CommonPluginUtils.getCopyToFields();
+		List<Field> sourceFields = fieldCollectionsUtils.getCopyFromFields();
+		List<Field> destinationFields = fieldCollectionsUtils.getCopyToFields();
 
 		velocityParams.put("val-sourceFieldsList", Collections.unmodifiableList(sourceFields));
 		velocityParams.put("val-destinationFieldsList", Collections.unmodifiableList(destinationFields));
@@ -55,8 +63,8 @@ public class WorkflowCopyValueFromOtherFieldPostFunctionPluginFactory extends Ab
 	 * com.opensymphony.workflow.loader.AbstractDescriptor)
 	 */
 	protected void getVelocityParamsForView(Map velocityParams, AbstractDescriptor descriptor) {
-		Field sourceFieldId = getFieldByName(descriptor, "sourceField");
-		Field destinationField = getFieldByName(descriptor, "destinationField");
+		Field sourceFieldId = workflowUtils.getFieldFromDescriptor(descriptor, "sourceField");
+		Field destinationField = workflowUtils.getFieldFromDescriptor(descriptor, "destinationField");
 
 		velocityParams.put("val-sourceFieldSelected", sourceFieldId);
 		velocityParams.put("val-destinationFieldSelected", destinationField);

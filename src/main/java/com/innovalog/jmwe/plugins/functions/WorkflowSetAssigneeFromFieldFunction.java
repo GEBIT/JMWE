@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
+import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import org.apache.log4j.Logger;
 
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
-import com.innovalog.googlecode.jsu.util.CommonPluginUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowFactoryUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 
 /**
@@ -19,15 +19,22 @@ import com.opensymphony.workflow.loader.AbstractDescriptor;
  */
 public class WorkflowSetAssigneeFromFieldFunction extends AbstractWorkflowPluginFactory implements WorkflowPluginFunctionFactory {
 	private final Logger log = Logger.getLogger(WorkflowSetAssigneeFromFieldFunction.class);
+    private final WorkflowUtils workflowUtils;
+    private final FieldCollectionsUtils fieldCollectionsUtils;
 
 	public static final String FIELD = "field";
 	public static final String SELECTED_FIELD = "selectedField";
 	public static final String FIELD_LIST = "fieldList";
 
-	@SuppressWarnings("unchecked")
+    public WorkflowSetAssigneeFromFieldFunction(WorkflowUtils workflowUtils, FieldCollectionsUtils fieldCollectionsUtils) {
+        this.workflowUtils = workflowUtils;
+        this.fieldCollectionsUtils = fieldCollectionsUtils;
+    }
+
+    @SuppressWarnings("unchecked")
 	protected void getVelocityParamsForInput(Map velocityParams) {
 		log.debug("");
-		List<Field> fields = CommonPluginUtils.getAllEditableFields();
+		List<Field> fields = fieldCollectionsUtils.getAllEditableFields();
 
 		velocityParams.put(FIELD_LIST, Collections.unmodifiableList(fields));
 	}
@@ -37,13 +44,13 @@ public class WorkflowSetAssigneeFromFieldFunction extends AbstractWorkflowPlugin
 		log.debug("");
 		this.getVelocityParamsForInput(velocityParams);
 
-		velocityParams.put(SELECTED_FIELD, WorkflowFactoryUtils.getFieldByName(descriptor, FIELD));
+		velocityParams.put(SELECTED_FIELD, workflowUtils.getFieldFromDescriptor(descriptor, FIELD));
 	}
 
 	@SuppressWarnings("unchecked")
 	protected void getVelocityParamsForView(Map velocityParams, AbstractDescriptor descriptor) {
 		log.debug("");
-		velocityParams.put(SELECTED_FIELD, WorkflowFactoryUtils.getFieldByName(descriptor, FIELD));
+		velocityParams.put(SELECTED_FIELD, workflowUtils.getFieldFromDescriptor(descriptor, FIELD));
 	}
 
 	@SuppressWarnings("unchecked")

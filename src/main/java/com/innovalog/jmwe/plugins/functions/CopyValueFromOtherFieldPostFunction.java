@@ -1,9 +1,6 @@
 package com.innovalog.jmwe.plugins.functions;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 import com.atlassian.jira.issue.ModifiedValue;
 import com.atlassian.jira.issue.MutableIssue;
@@ -19,9 +16,15 @@ import com.opensymphony.workflow.WorkflowException;
  * This function copies the value from a field to another one.
  */
 public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChangesPostFunction {
+    private final WorkflowUtils workflowUtils;
+
+    public CopyValueFromOtherFieldPostFunction(WorkflowUtils workflowUtils) {
+        this.workflowUtils = workflowUtils;
+    }
+
     /* (non-Javadoc)
-     * @see com.googlecode.jsu.workflow.function.AbstractPreserveChangesPostFunction#executeFunction(java.util.Map, java.util.Map, com.opensymphony.module.propertyset.PropertySet, com.atlassian.jira.issue.util.IssueChangeHolder)
-     */
+    * @see com.googlecode.jsu.workflow.function.AbstractPreserveChangesPostFunction#executeFunction(java.util.Map, java.util.Map, com.opensymphony.module.propertyset.PropertySet, com.atlassian.jira.issue.util.IssueChangeHolder)
+    */
     @Override
     protected void executeFunction(
             Map<String, Object> transientVars, Map<String, String> args,
@@ -34,8 +37,8 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
         String appendValues = (String) args.get("appendValues");
         boolean bAppendValues = appendValues != null && appendValues.equalsIgnoreCase("yes");
 
-        Field fieldFrom = (Field) WorkflowUtils.getFieldFromKey(fieldFromKey);
-        Field fieldTo = (Field) WorkflowUtils.getFieldFromKey(fieldToKey);
+        Field fieldFrom = (Field) workflowUtils.getFieldFromKey(fieldFromKey);
+        Field fieldTo = (Field) workflowUtils.getFieldFromKey(fieldToKey);
 
         String fieldFromName = (fieldFrom != null) ? fieldFrom.getName() : fieldFromKey;
         String fieldToName = (fieldTo != null) ? fieldTo.getName() : fieldToKey;
@@ -50,14 +53,14 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
 				if (mv != null)
 					sourceValue = mv.getOldValue();
 	            else
-		            sourceValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+		            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
             }
             else
-	            sourceValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+	            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
 
             if (bAppendValues) {
             	//get existing destination field value
-            	Object destValue = WorkflowUtils.getFieldValueFromIssue(issue, fieldTo);
+            	Object destValue = workflowUtils.getFieldValueFromIssue(issue, fieldTo);
             	if (destValue == null)
             		destValue = Collections.EMPTY_LIST;
             	if (! (destValue instanceof Collection))
@@ -67,7 +70,11 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
             	}
             	else
             	{
-            		Collection newVal = new ArrayList();
+            		Collection newVal;
+                    if (destValue instanceof Set)
+                        newVal = new HashSet();
+                    else
+                        newVal = new ArrayList();
             		newVal.addAll((Collection)destValue);
             		if (sourceValue instanceof Collection)
             			newVal.addAll((Collection)sourceValue);
@@ -100,7 +107,7 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
             }
 
             // It set the value to field.
-            WorkflowUtils.setFieldValue(issue, fieldToKey, sourceValue, holder);
+            workflowUtils.setFieldValue(issue, fieldToKey, sourceValue, holder);
 
             if (log.isDebugEnabled()) {
                 log.debug("Value was successfully copied");
