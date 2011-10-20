@@ -11,6 +11,8 @@ import java.util.Set;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.UserPropertyManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 
@@ -24,7 +26,6 @@ import com.atlassian.jira.security.roles.DefaultRoleActors;
 import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.user.User;
 import com.opensymphony.workflow.FunctionProvider;
 
 
@@ -32,6 +33,12 @@ import com.opensymphony.workflow.FunctionProvider;
 public class AssignToRoleMemberFunction implements FunctionProvider
 {
     private static final Category log = Category.getInstance(AssignToRoleMemberFunction.class);
+
+    private final UserPropertyManager userPropertyManager;
+
+    public AssignToRoleMemberFunction(UserPropertyManager userPropertyManager) {
+        this.userPropertyManager = userPropertyManager;
+    }
 
     public void execute(Map transientVars, Map args, PropertySet ps)
     {
@@ -94,7 +101,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 				userIterator: while (iterator.hasNext()) {
 					User user = (User)iterator.next();
 					
-					PropertySet userProperties = user.getPropertySet();
+					PropertySet userProperties = userPropertyManager.getPropertySet(user);
 					//1.
 					String property = userProperties.getString("jira.meta." + propertyNameOrValue); 
 					if (property != null && "default".equals(property)) {
@@ -141,7 +148,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
         }
 		
 		// Assign the issue
-		log.info("AssignToRoleMember assigning to: " + assignToUser.getFullName());
+		log.info("AssignToRoleMember assigning to: " + assignToUser.getName());
         MutableIssue issue = (MutableIssue) transientVars.get("issue");        
         issue.setAssignee(assignToUser);
         issue.store();

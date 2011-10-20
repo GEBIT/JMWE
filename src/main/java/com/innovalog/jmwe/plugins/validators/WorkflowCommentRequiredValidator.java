@@ -8,9 +8,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.atlassian.core.user.GroupUtils;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginValidatorFactory;
+import com.atlassian.jira.security.groups.GroupManager;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ValidatorDescriptor;
@@ -22,9 +22,11 @@ import com.opensymphony.workflow.loader.ValidatorDescriptor;
 public class WorkflowCommentRequiredValidator extends
 		AbstractWorkflowPluginFactory implements WorkflowPluginValidatorFactory {
     private final WorkflowUtils workflowUtils;
+    private final GroupManager groupManager;
 
-    public WorkflowCommentRequiredValidator(WorkflowUtils workflowUtils) {
+    public WorkflowCommentRequiredValidator(WorkflowUtils workflowUtils, GroupManager groupManager) {
         this.workflowUtils = workflowUtils;
+        this.groupManager = groupManager;
     }
 
     /* (non-Javadoc)
@@ -44,7 +46,7 @@ public class WorkflowCommentRequiredValidator extends
 		String strGroupsSelected = (String)args.get("hidGroupsList");
 		Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
 		
-		Collection groups = GroupUtils.getGroups();
+		Collection groups = groupManager.getAllGroups();
 		groups.removeAll(groupsSelected);
 		
 		velocityParams.put("val-hidGroupsList", workflowUtils.getStringGroup(groupsSelected, WorkflowUtils.SPLITTER));
@@ -56,7 +58,7 @@ public class WorkflowCommentRequiredValidator extends
 	 */
 	@Override
 	protected void getVelocityParamsForInput(Map velocityParams) {
-		Collection groups = GroupUtils.getGroups();
+		Collection groups = groupManager.getAllGroups();
 		velocityParams.put("val-groupsList", Collections.unmodifiableCollection(groups));
 		velocityParams.put("val-splitter", WorkflowUtils.SPLITTER);
 	}

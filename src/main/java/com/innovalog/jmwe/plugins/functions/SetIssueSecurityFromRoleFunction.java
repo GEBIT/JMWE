@@ -2,6 +2,7 @@ package com.innovalog.jmwe.plugins.functions;
 
 import java.util.Map;
 
+import com.atlassian.crowd.embedded.api.User;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.ofbiz.core.entity.GenericEntityException;
@@ -16,7 +17,6 @@ import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.user.User;
 import com.opensymphony.workflow.WorkflowException;
 
 public class SetIssueSecurityFromRoleFunction extends AbstractJiraFunctionProvider

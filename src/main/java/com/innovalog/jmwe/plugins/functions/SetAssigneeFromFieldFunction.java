@@ -2,6 +2,8 @@ package com.innovalog.jmwe.plugins.functions;
 
 import java.util.Map;
 
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.util.UserManager;
 import org.apache.log4j.Logger;
 
 import com.atlassian.jira.issue.MutableIssue;
@@ -9,8 +11,6 @@ import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.innovalog.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.user.User;
-import com.opensymphony.user.UserManager;
 import com.opensymphony.workflow.WorkflowException;
 
 /**
@@ -19,9 +19,11 @@ import com.opensymphony.workflow.WorkflowException;
 public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
 	private static final Logger log = Logger.getLogger(SetAssigneeFromFieldFunction.class);
     private final WorkflowUtils workflowUtils;
+    private final UserManager userManager;
 
-    public SetAssigneeFromFieldFunction(WorkflowUtils workflowUtils) {
+    public SetAssigneeFromFieldFunction(WorkflowUtils workflowUtils, UserManager userManager) {
         this.workflowUtils = workflowUtils;
+        this.userManager = userManager;
     }
 
     @SuppressWarnings("unchecked")
@@ -46,7 +48,7 @@ public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
 				if (log.isDebugEnabled()) {
 					log.debug(String.format("Value of field [%s] is [%s], setting Assignee to user [%s] on issue [%s]", fieldFrom.getName(), sourceValue.toString(), sourceValue.toString(), issue.getKey()));
 				}
-				User user = UserManager.getInstance().getUser(sourceValue.toString());
+				User user = userManager.getUser(sourceValue.toString());
 				if (user == null) {
 					if (log.isDebugEnabled()) {
 						log.warn(String.format("Unable to find user [%s]", sourceValue.toString()));

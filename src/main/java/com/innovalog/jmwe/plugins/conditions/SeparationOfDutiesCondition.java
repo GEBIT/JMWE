@@ -14,8 +14,6 @@ import com.atlassian.jira.issue.changehistory.ChangeHistory;
 import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
 import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.user.User;
-import com.opensymphony.user.UserManager;
 import com.opensymphony.workflow.WorkflowContext;
 import com.opensymphony.workflow.WorkflowException;
 

@@ -6,13 +6,14 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.util.UserManager;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Category;
 import org.ofbiz.core.entity.GenericValue;
 
 import webwork.action.ServletActionContext;
 
-import com.atlassian.core.user.UserUtils;
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueFieldConstants;
@@ -25,14 +26,18 @@ import com.atlassian.jira.security.roles.ProjectRole;
 import com.atlassian.jira.security.roles.ProjectRoleActors;
 import com.atlassian.jira.security.roles.ProjectRoleManager;
 import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.user.EntityNotFoundException;
-import com.opensymphony.user.User;
 import com.opensymphony.workflow.WorkflowException;
 
 // This post function will assign the issue to the first default user of the specified role
 public class AssignToLastRoleMemberFunction extends AbstractPreserveChangesPostFunction
 {
     private static final Category log = Category.getInstance(AssignToLastRoleMemberFunction.class);
+
+    private final UserManager userManager;
+
+    public AssignToLastRoleMemberFunction(UserManager userManager) {
+        this.userManager = userManager;
+    }
 
     protected void executeFunction(
             Map<String, Object> transientVars, Map<String, String> args,
@@ -138,17 +143,14 @@ public class AssignToLastRoleMemberFunction extends AbstractPreserveChangesPostF
         				//the assignee was changed in this changeset. grab the user object and move on to see if this user is a member of the specified role
         				log.debug("AssignToLastRoleMember history says assignee was previously " + change.getString("oldvalue"));
         				//get a true User object based on the username
-        				try {
-							user = UserUtils.getUser(change.getString("oldvalue"));
-						} catch (EntityNotFoundException e) {
-						}
+                        user = userManager.getUser(change.getString("oldvalue"));
         				//break out of the loop over fields changed in this changeset. NOT the loop over all changesets
         				break;
         			}
         		}
         		//if we have a real user and it is a member of the specified role
         		if (user != null && users.contains(user)) {
-        			log.info("AssignToLastRoleMember assigning " + genericIssue.getKey() + " to: " + user.getFullName());
+        			log.info("AssignToLastRoleMember assigning " + genericIssue.getKey() + " to: " + user.getName());
         			
         			// Assign the issue
         	        MutableIssue issue = (MutableIssue) transientVars.get("issue");        
