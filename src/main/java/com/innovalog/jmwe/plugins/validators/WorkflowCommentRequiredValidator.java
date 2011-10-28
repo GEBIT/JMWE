@@ -86,10 +86,6 @@ public class WorkflowCommentRequiredValidator extends
 		Map<String, String> params = new HashMap<String, String>();
 		String strErrorMessage = extractSingleParam(formParams, "errorMessage");
 		
-		if ("".equals(strErrorMessage)) {
-			throw new IllegalArgumentException("An error message must be provided.");
-		}
-		
 		params.put("errorMessage", strErrorMessage);
 		
 		try{

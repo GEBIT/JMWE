@@ -91,7 +91,10 @@ public class CommentRequiredValidator extends GenericValidator {
 
         	//find Comment field
         	Field field = ManagerFactory.getFieldManager().getField(IssueFieldConstants.COMMENT);
-        	this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to your administrator.");
+            if ("".equals(errorMsg))
+                this.setExceptionMessage(field, "You must provide a Comment", "A Comment is required but cannot be input. Please report this error to your administrator.");
+            else
+        	    this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to your administrator.");
         }
 	}
 

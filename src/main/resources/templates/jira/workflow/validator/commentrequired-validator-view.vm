@@ -1,4 +1,9 @@
-If a Comment is not provided, report the following error: <b>$errorMessage</b>.&nbsp;
+If a Comment is not provided, report the following error:
+#if (!$errorMessage || $errorMessage=="")
+    <b>You must provide a Comment.</b>&nbsp;
+#else
+    <b>$errorMessage</b>.&nbsp;
+#end
 #if (${val-groupsListSelected})
   #if (${val-groupsListSelected.isEmpty()})
   #else
