@@ -180,6 +180,8 @@ public class WorkflowUtils {
                             }
                         }
                     }
+                } else if (value instanceof Option) {
+                    retVal = ((Option)value).toString();
                 } else {
                     retVal = value;
                 }
@@ -428,13 +430,13 @@ public class WorkflowUtils {
             }
 
             // Not new
-            if (issue.getKey() != null) {
+/*            if (issue.getKey() != null) {
                 // Remove duplicated issue update
                 if (issue.getModifiedFields().containsKey(field.getId())) {
                     issue.getModifiedFields().remove(field.getId());
                 }
             }
-        } else { //----- System Fields -----
+*/        } else { //----- System Fields -----
             final String fieldId = field.getId();
 
             // Special treatment of fields.

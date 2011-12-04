@@ -44,7 +44,7 @@ public class WorkflowCommentRequiredValidator extends
 		velocityParams.remove("val-groupsList");
 		
 		String strGroupsSelected = (String)args.get("hidGroupsList");
-		Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+		Collection groupsSelected = strGroupsSelected==null ? Collections.emptyList() : workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
 		
 		Collection groups = groupManager.getAllGroups();
 		groups.removeAll(groupsSelected);
@@ -74,7 +74,7 @@ public class WorkflowCommentRequiredValidator extends
 		velocityParams.put("errorMessage", args.get("errorMessage"));
 
 		String strGroupsSelected = (String)args.get("hidGroupsList");
-		Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+        Collection groupsSelected = strGroupsSelected==null ? Collections.emptyList() : workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
 		
 		velocityParams.put("val-groupsListSelected", Collections.unmodifiableCollection(groupsSelected));
 }

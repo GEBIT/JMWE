@@ -4,7 +4,9 @@
 package com.innovalog.jmwe.plugins.validators;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import com.atlassian.crowd.embedded.api.Group;
 import com.atlassian.crowd.embedded.api.User;
@@ -25,21 +27,20 @@ import com.opensymphony.workflow.WorkflowException;
 
 /**
  * @author fischerd
- *
  */
 public class CommentRequiredValidator extends GenericValidator {
 
-	@TransientVariable(WorkflowTransitionUtil.FIELD_COMMENT)
-	private String strComment;
-	
-	@Argument("errorMessage")
-	private String errorMsg;
-	
-	@Argument("hidGroupsList")
-	private String strGroupsSelected;
-	
-	@TransientVariable("context")
-	private WorkflowContext context;
+    @TransientVariable(WorkflowTransitionUtil.FIELD_COMMENT)
+    private String strComment;
+
+    @Argument("errorMessage")
+    private String errorMsg;
+
+    @Argument("hidGroupsList")
+    private String strGroupsSelected;
+
+    @TransientVariable("context")
+    private WorkflowContext context;
 
     private final UserManager userManager;
     private final GroupManager groupManager;
@@ -53,49 +54,42 @@ public class CommentRequiredValidator extends GenericValidator {
     /* (non-Javadoc)
       * @see com.innovalog.jmwe.plugins.validators.GenericValidator#validate()
       */
-	@Override
-	protected void validate() throws InvalidInputException, WorkflowException {
-		//JMWE-10
-		//check whether we were invoked through the SOAP API call progressWorkflowAction.
-		//If so, skip validation because comments cannot be passed this way
-		//NOTA: this is an ugly hack but for now it'll have to do!
-		try
-		{
-			throw new Exception();
-		}
-		catch(Exception e)
-		{
-			StackTraceElement[] stack = e.getStackTrace();
-			for (StackTraceElement entry : stack)
-			{
-				if (entry.getClassName().equals("com.atlassian.jira.rpc.soap.JiraSoapServiceImpl") && entry.getMethodName().equals("progressWorkflowAction"))
-					return;
-			}
-		}
-        if (!TextUtils.stringSet(strComment))
-        {
-        	//bypass validator for certain users
+    @Override
+    protected void validate() throws InvalidInputException, WorkflowException {
+        //JMWE-10
+        //check whether we were invoked through the SOAP API call progressWorkflowAction.
+        //If so, skip validation because comments cannot be passed this way
+        //NOTA: this is an ugly hack but for now it'll have to do!
+        try {
+            throw new Exception();
+        } catch (Exception e) {
+            StackTraceElement[] stack = e.getStackTrace();
+            for (StackTraceElement entry : stack) {
+                if (entry.getClassName().equals("com.atlassian.jira.rpc.soap.JiraSoapServiceImpl") && entry.getMethodName().equals("progressWorkflowAction"))
+                    return;
+            }
+        }
+        if (!TextUtils.stringSet(strComment)) {
+            //bypass validator for certain users
             // Obtain the current user.
             User userLogged = userManager.getUser(context.getCaller());
 
             // If there aren't groups selected, hidGroupsList is equal to "".
             // And groupsSelected will be an empty collection.
-            Collection groupsSelected = workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
-
-            Iterator it = groupsSelected.iterator();
-            while(it.hasNext()){
-                if(groupManager.isUserInGroup(userLogged,(Group) it.next())) {
+    			List<Group> groupsSelected = strGroupsSelected==null ? Collections.<Group>emptyList()
+                    : workflowUtils.getGroups(strGroupsSelected, WorkflowUtils.SPLITTER);
+            for (Group group : groupsSelected) {
+                if (groupManager.isUserInGroup(userLogged, group)) {
                     return;
                 }
             }
-
-        	//find Comment field
-        	Field field = ManagerFactory.getFieldManager().getField(IssueFieldConstants.COMMENT);
+            //find Comment field
+            Field field = ManagerFactory.getFieldManager().getField(IssueFieldConstants.COMMENT);
             if ("".equals(errorMsg))
                 this.setExceptionMessage(field, "You must provide a Comment", "A Comment is required but cannot be input. Please report this error to your administrator.");
             else
-        	    this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to your administrator.");
+                this.setExceptionMessage(field, errorMsg, "A Comment is required but cannot be input. Please report this error to your administrator.");
         }
-	}
+    }
 
 }
