@@ -62,8 +62,10 @@ public class WorkflowPreviousStatusCondition extends
 		ConditionDescriptor conditionDescriptor = (ConditionDescriptor)descriptor;
 		String statusString = (String) conditionDescriptor.getArgs().get("jira.previousstatus");
 		velocityParams.put("selectedStatus", statusString);
-		String mostRecentStatusOnly = (String) conditionDescriptor.getArgs().get("jira.mostRecentStatusOnly");
-		velocityParams.put("mostRecentOnly", mostRecentStatusOnly);
+    String mostRecentStatusOnly = (String) conditionDescriptor.getArgs().get("jira.mostRecentStatusOnly");
+  	velocityParams.put("mostRecentOnly", mostRecentStatusOnly);
+    String not = (String) conditionDescriptor.getArgs().get("jira.not");
+  	velocityParams.put("not", not);
 	}
 
 	/* (non-Javadoc)
@@ -77,14 +79,22 @@ public class WorkflowPreviousStatusCondition extends
 			params.put("jira.previousstatus", selectedStatus);
 		} catch(IllegalArgumentException e) {
 		}
-		try{
-			String mostRecentStatusOnlyString = extractSingleParam(formParams, "mostRecentOnly");
-			params.put("jira.mostRecentStatusOnly", mostRecentStatusOnlyString);
-		}
-		catch (IllegalArgumentException e)
-		{
-			params.put("jira.mostRecentStatusOnly","no");
-		}
+    try{
+  			String mostRecentStatusOnlyString = extractSingleParam(formParams, "mostRecentOnly");
+  			params.put("jira.mostRecentStatusOnly", mostRecentStatusOnlyString);
+  		}
+  		catch (IllegalArgumentException e)
+  		{
+  			params.put("jira.mostRecentStatusOnly","no");
+  		}
+    try{
+  			String notString = extractSingleParam(formParams, "not");
+  			params.put("jira.not", notString);
+  		}
+  		catch (IllegalArgumentException e)
+  		{
+  			params.put("jira.not","no");
+  		}
 		return params;
 	}
 

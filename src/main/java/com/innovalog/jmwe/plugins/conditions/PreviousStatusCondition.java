@@ -31,8 +31,9 @@ public class PreviousStatusCondition extends AbstractJiraCondition {
 			throws WorkflowException {
         Issue genericIssue =  (Issue) transientVars.get("issue");
         String statusToLookFor = (String)args.get("jira.previousstatus");
-        boolean mostRecentStatusOnly = args.get("jira.mostRecentStatusOnly").equals("yes");
-        
+        boolean mostRecentStatusOnly = "yes".equals(args.get("jira.mostRecentStatusOnly"));
+        boolean not = "yes".equals(args.get("jira.not"));
+
         log.debug("Issue "+genericIssue.getKey()+": looking for " + statusToLookFor + " previous status");
         
        	ChangeHistoryManager changeHistoryManager = (ChangeHistoryManager)ComponentManager.getComponentInstanceOfType(ChangeHistoryManager.class);
@@ -61,15 +62,15 @@ public class PreviousStatusCondition extends AbstractJiraCondition {
     				
     				if (oldStatus.compareToIgnoreCase(statusToLookFor)==0)
     				//we've found our status
-    					return true;
+    					return !not;
     				else if (mostRecentStatusOnly)
-    					//since our latest status is NOT the one we're looking for, return false
-    					return false;
+    					//since our latest status is NOT the one we're looking for, return not
+    					return not;
 	    			}
     		}
     	}
 
-        return false;
+        return not;
 	}
 
 }

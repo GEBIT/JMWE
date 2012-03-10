@@ -1,5 +1,13 @@
 #if ($mostRecentOnly=='yes')
-The Issue's previous Status (immediately before the current Status) must be <b>$selectedStatus</b>.
+The Issue's previous Status (immediately before the current Status) must 
+#if ($not=='yes')
+<b>not</b>
+#end
+be <b>$selectedStatus</b>.
+#else
+#if ($not=='yes')
+The Issue must not have been in Status <b>$selectedStatus</b> at any point before its current Status.
 #else
 The Issue must have been in Status <b>$selectedStatus</b> at some point before its current Status.
+#end
 #end

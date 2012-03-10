@@ -244,7 +244,8 @@ public class WorkflowUtils {
                 } else if (fieldId.equals(IssueFieldConstants.TIMETRACKING)) {
                     // Not implemented, yet.
                 } else if (fieldId.equals(IssueFieldConstants.ISSUE_LINKS)) {
-                    retVal = issueLinkManager.getIssueLinks(issue.getId());
+                    retVal = issueLinkManager.getOutwardLinks(issue.getId());
+                    ((Collection)retVal).addAll(issueLinkManager.getInwardLinks(issue.getId()));
                 } else if (fieldId.equals(IssueFieldConstants.WORKRATIO)) {
                     retVal = String.valueOf(WorkRatio.getWorkRatio(issue));
                 } else if (fieldId.equals(IssueFieldConstants.ISSUE_KEY)) {
@@ -564,23 +565,29 @@ public class WorkflowUtils {
                 } else if (value instanceof Long) {
                     issue.setSecurityLevelId((Long) value);
                 } else {
-                    Collection<GenericValue> levels;
 
                     try {
-                        levels = issueSecurityLevelManager.getSecurityLevelsByName(value.toString());
-                    } catch (GenericEntityException e) {
-                        throw new IllegalArgumentException("Unable to find security level \"" + value + "\"");
-                    }
+                        Long l = Long.decode(value.toString());
+                        issue.setSecurityLevelId(l);
+                    } catch (NumberFormatException ignore) {
+                        //try looking for the security level name instead
+                        Collection<GenericValue> levels;
+                        try {
+                            levels = issueSecurityLevelManager.getSecurityLevelsByName(value.toString());
+                        } catch (GenericEntityException e) {
+                            throw new IllegalArgumentException("Unable to find security level \"" + value + "\"");
+                        }
 
-                    if (levels == null) {
-                        throw new IllegalArgumentException("Unable to find security level \"" + value + "\"");
-                    }
+                        if (levels == null || levels.size() == 0) {
+                            throw new IllegalArgumentException("Unable to find security level \"" + value + "\"");
+                        }
 
-                    if (levels.size() > 1) {
-                        throw new IllegalArgumentException("More that one security level with name \"" + value + "\"");
-                    }
+                        if (levels.size() > 1) {
+                            throw new IllegalArgumentException("More that one security level with name \"" + value + "\"");
+                        }
 
-                    issue.setSecurityLevel(levels.iterator().next());
+                        issue.setSecurityLevel(levels.iterator().next());
+                    }
                 }
             } else if (fieldId.equals(IssueFieldConstants.ASSIGNEE)) {
                 User user = convertValueToUser(value);

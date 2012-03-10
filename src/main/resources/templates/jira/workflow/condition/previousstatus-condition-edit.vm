@@ -17,5 +17,11 @@
 	        #end
 	        >Most recent status only</input>
         <br><font size="1">Choose the previous status the issue must have been in.</font>
+        <br><input type="checkbox" id="not" name="not" value="yes"
+        	        #if ($not=='yes')
+        	        checked="yes"
+        	        #end
+        	        >Reverse condition</input>
+        <br><font size="1">If checked, the issue must <i>not</i> have been in the selected status.</font>
     </td>
 </tr>
