@@ -4,18 +4,10 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import webwork.dispatcher.ActionResult;
-
-import com.atlassian.core.ofbiz.CoreFactory;
-import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.jira.ComponentManager;
-import com.atlassian.jira.action.ActionNames;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
-import com.atlassian.jira.issue.util.DefaultIssueChangeHolder;
 import com.atlassian.jira.issue.util.IssueChangeHolder;
-import com.atlassian.jira.util.ImportUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 

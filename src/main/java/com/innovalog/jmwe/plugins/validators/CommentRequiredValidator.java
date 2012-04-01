@@ -3,9 +3,7 @@
  */
 package com.innovalog.jmwe.plugins.validators;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import com.atlassian.crowd.embedded.api.Group;
@@ -16,10 +14,10 @@ import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.security.groups.GroupManager;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.workflow.WorkflowTransitionUtil;
-import com.innovalog.googlecode.jsu.annotation.Argument;
-import com.innovalog.googlecode.jsu.annotation.TransientVariable;
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.annotation.Argument;
+import com.googlecode.jsu.annotation.TransientVariable;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.util.TextUtils;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowContext;

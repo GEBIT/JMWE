@@ -13,7 +13,7 @@ import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.config.ConstantsManager;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginValidatorFactory;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ValidatorDescriptor;
 

@@ -8,8 +8,8 @@ import java.util.Map;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginFunctionFactory;
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.FunctionDescriptor;
 

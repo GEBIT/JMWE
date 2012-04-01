@@ -1,120 +1,127 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+  <modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.innovalog.jmwe</groupId>
-	<artifactId>jira-misc-workflow-extensions</artifactId>
-	<name>JIRA Misc Workflow Extensions</name>
-	<version>2.5.1</version>
-	<packaging>atlassian-plugin</packaging>
+  <groupId>com.innovalog.jmwe</groupId>
+  <artifactId>jira-misc-workflow-extensions</artifactId>
+  <name>JIRA Misc Workflow Extensions</name>
+  <version>2.5.1</version>
+  <packaging>atlassian-plugin</packaging>
 
-	<scm>
-		<connection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</connection>
-		<developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</developerConnection>
-	</scm>
+  <scm>
+    <connection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</connection>
+    <developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</developerConnection>
+  </scm>
 
 
-	<properties>
-		<atlassian.plugin.key>
-			com.innovalog.jmwe.plugins
-		</atlassian.plugin.key>
-		<!--
-			Change this property to compile your plugin against different JIRA
-			versions.
-		-->
-		<jira.version>5.0-rc1</jira.version>
-		<jira.data.version>5.0-rc1</jira.data.version>
-	</properties>
+  <properties>
+    <atlassian.plugin.key>
+      com.innovalog.jmwe.plugins
+    </atlassian.plugin.key>
+    <!--
+        Change this property to compile your plugin against different JIRA
+        versions.
+      -->
+    <jira.version>5.0</jira.version>
+    <jira.data.version>5.0</jira.data.version>
+  </properties>
 
-	<description>Several JIRA workflow extensions</description>
-	<url></url>
+  <description>Several JIRA workflow extensions</description>
+  <url></url>
 
-	<developers>
-		<developer>
-			<name>David Fischer</name>
-			<organization>Innovalog</organization>
-		</developer>
-		<developer>
-			<name>Alexey Abashev</name>
-		</developer>
-	</developers>
+  <developers>
+    <developer>
+      <name>David Fischer</name>
+      <organization>Innovalog</organization>
+    </developer>
+    <developer>
+      <name>Alexey Abashev</name>
+    </developer>
+  </developers>
 
-	<organization>
-		<name>Innovalog</name>
-		<url>www.innovalog.com</url>
-	</organization>
+  <organization>
+    <name>Innovalog</name>
+    <url>www.innovalog.com</url>
+  </organization>
 
-	<inceptionYear>2008</inceptionYear>
+  <inceptionYear>2008</inceptionYear>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>com.atlassian.maven.plugins</groupId>
-                <artifactId>maven-jira-plugin</artifactId>
-                <version>3.2</version>
-                <extensions>true</extensions>
-                <configuration>
-                    <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.data.version}</productDataVersion>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.6</source>
-                    <target>1.6</target>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.atlassian.maven.plugins</groupId>
+        <artifactId>maven-jira-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <productVersion>${jira.version}</productVersion>
+          <productDataVersion>${jira.data.version}</productDataVersion>
+          <instructions>
+            <Spring-Context>*;timeout:=60</Spring-Context>
+          </instructions>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>atlassian-jira</artifactId>
-            <version>${jira.version}</version>
-            <scope>provided</scope>
-        </dependency>        
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.6</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-func-tests</artifactId>
-            <version>${jira.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-        	<groupId>javax.servlet</groupId>
-        	<artifactId>servlet-api</artifactId>
-            <scope>provided</scope>
-        	<version>2.3</version>
-        </dependency>
-    </dependencies>
+  <dependencies>
+    <dependency>
+      <groupId>com.atlassian.jira</groupId>
+      <artifactId>atlassian-jira</artifactId>
+      <version>${jira.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.6</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.atlassian.jira</groupId>
+      <artifactId>jira-func-tests</artifactId>
+      <version>${jira.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+      <version>2.3</version>
+    </dependency>
+    <dependency>
+      <groupId>com.innovalog</groupId>
+      <artifactId>workflow_utils</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+    </dependency>
+  </dependencies>
 
-	<distributionManagement>
-		<repository>
-			<id>atlassian-contrib</id>
-			<name>Atlassian repository of contributed code</name>
-			<url>dav:https://maven.atlassian.com/contrib</url>
-		</repository>
-		<snapshotRepository>
-			<id>atlassian-contrib-snapshot</id>
-			<name>Atlassian repository of contributed code snapshots</name>
-			<url>dav:https://maven.atlassian.com/contrib-snapshot</url>
-		</snapshotRepository>
-	</distributionManagement>
+  <distributionManagement>
+    <repository>
+      <id>atlassian-contrib</id>
+      <name>Atlassian repository of contributed code</name>
+      <url>dav:https://maven.atlassian.com/contrib</url>
+    </repository>
+    <snapshotRepository>
+      <id>atlassian-contrib-snapshot</id>
+      <name>Atlassian repository of contributed code snapshots</name>
+      <url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+    </snapshotRepository>
+  </distributionManagement>
 
-    <repositories>
-        <repository>
-            <id>atlassian</id>
-            <url>https://maven.atlassian.com/repository/public</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>atlassian</id>
+      <url>https://maven.atlassian.com/repository/public</url>
+    </repository>
+  </repositories>
 </project>

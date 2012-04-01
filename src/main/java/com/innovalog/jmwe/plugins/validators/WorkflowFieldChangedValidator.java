@@ -12,7 +12,7 @@ import com.atlassian.jira.ManagerFactory;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginValidatorFactory;
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ValidatorDescriptor;
 

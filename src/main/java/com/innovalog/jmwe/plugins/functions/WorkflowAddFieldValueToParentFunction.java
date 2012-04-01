@@ -5,8 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import org.apache.log4j.Logger;
 
 import com.atlassian.jira.issue.fields.Field;

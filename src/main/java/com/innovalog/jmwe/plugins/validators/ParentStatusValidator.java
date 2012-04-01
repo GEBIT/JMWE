@@ -7,9 +7,9 @@ import java.util.Set;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.status.Status;
-import com.innovalog.googlecode.jsu.annotation.Argument;
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.annotation.Argument;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowException;
 

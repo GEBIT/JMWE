@@ -5,15 +5,15 @@ package com.innovalog.jmwe.plugins.validators;
 
 import java.util.List;
 
-import com.innovalog.googlecode.jsu.util.FieldCollectionsUtils;
-import com.innovalog.googlecode.jsu.util.WorkflowUtils;
+import com.googlecode.jsu.util.FieldCollectionsUtils;
+import com.googlecode.jsu.util.WorkflowUtils;
 import org.ofbiz.core.entity.GenericValue;
 
 import com.atlassian.jira.ComponentManager;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.changehistory.ChangeHistory;
 import com.atlassian.jira.issue.changehistory.ChangeHistoryManager;
-import com.innovalog.googlecode.jsu.annotation.Argument;
+import com.googlecode.jsu.annotation.Argument;
 import com.opensymphony.workflow.InvalidInputException;
 import com.opensymphony.workflow.WorkflowException;
 
