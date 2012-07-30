@@ -42,7 +42,7 @@ public class SeparationOfDutiesCondition extends AbstractJiraCondition {
 
     	for (int i = changeHistory.size() - 1; i >= 0; i--) {
     		ChangeHistory changeHistoryItem = (ChangeHistory) changeHistory.get(i);
-    		if (!changeHistoryItem.getUsername().equals(userName))
+    		if (changeHistoryItem.getUsername()==null || !changeHistoryItem.getUsername().equals(userName))
     			//we're only interested in changes by the current user
     			continue;
 
