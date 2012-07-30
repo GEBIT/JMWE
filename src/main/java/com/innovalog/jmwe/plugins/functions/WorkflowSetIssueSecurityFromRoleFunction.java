@@ -57,6 +57,7 @@ public class WorkflowSetIssueSecurityFromRoleFunction extends AbstractWorkflowPl
 					securityLevelsMap.put(securityLevel.getLong("id").toString(),securityLevel.getString("name"));
 				}
 			}
+      securityLevelsMap.put("none","<i>None</i>");
 			velocityParams.put("securitylevels",securityLevelsMap);
 		} catch (GenericEntityException e)
 		{
@@ -77,21 +78,25 @@ public class WorkflowSetIssueSecurityFromRoleFunction extends AbstractWorkflowPl
 		}
 		if (velocityParams.get("selectedSecurityLevelId") != null)
 		{
-			IssueSecurityLevelManager issueSecurityLevelManager=(IssueSecurityLevelManager)ComponentManager.getComponentInstanceOfType(IssueSecurityLevelManager.class);
-			GenericValue securityLevel;
-			try
-			{
-				securityLevel = issueSecurityLevelManager.getIssueSecurityLevel(new Long((String)velocityParams.get("selectedSecurityLevelId")));
-				velocityParams.put("selectedSecurityLevelName", securityLevel.getString("name"));
-			} catch (NumberFormatException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (GenericEntityException e)
-			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+      if (velocityParams.get("selectedSecurityLevelId").equals("none"))
+        velocityParams.put("selectedSecurityLevelName", "none");
+      else {
+        IssueSecurityLevelManager issueSecurityLevelManager=(IssueSecurityLevelManager)ComponentManager.getComponentInstanceOfType(IssueSecurityLevelManager.class);
+        GenericValue securityLevel;
+        try
+        {
+          securityLevel = issueSecurityLevelManager.getIssueSecurityLevel(new Long((String)velocityParams.get("selectedSecurityLevelId")));
+          velocityParams.put("selectedSecurityLevelName", securityLevel.getString("name"));
+        } catch (NumberFormatException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        } catch (GenericEntityException e)
+        {
+          // TODO Auto-generated catch block
+          e.printStackTrace();
+        }
+      }
 		}
 	}
 

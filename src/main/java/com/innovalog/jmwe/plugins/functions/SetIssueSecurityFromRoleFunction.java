@@ -74,17 +74,18 @@ public class SetIssueSecurityFromRoleFunction extends AbstractJiraFunctionProvid
 				return;
 			}
 			Long issueSecurityId = null;
-			try
-			{
-				issueSecurityId = new Long(Long.parseLong(rawissueSecurityId));
-			} catch (NumberFormatException e)
-			{
-				StringBuffer sb = new StringBuffer();
-				log.warn(sb.append(
-						"SetIssueSecurityFromRolee not configured with a valid issueSecurityId, the issue security id: ").append(
-						issueSecurityId).append(" can not be parsed.").toString());
-				return;
-			}
+      if (!rawissueSecurityId.equals("none"))
+        try
+        {
+          issueSecurityId = new Long(Long.parseLong(rawissueSecurityId));
+        } catch (NumberFormatException e)
+        {
+          StringBuffer sb = new StringBuffer();
+          log.warn(sb.append(
+              "SetIssueSecurityFromRolee not configured with a valid issueSecurityId, the issue security id: ").append(
+              issueSecurityId).append(" can not be parsed.").toString());
+          return;
+        }
 
 			try {
 				issue.setSecurityLevelId(issueSecurityId);
