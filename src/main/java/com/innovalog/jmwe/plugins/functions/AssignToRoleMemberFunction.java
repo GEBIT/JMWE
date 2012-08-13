@@ -137,7 +137,7 @@ public class AssignToRoleMemberFunction implements FunctionProvider
 								
 			} else {
 				StringBuffer sb = new StringBuffer();
-	        	log.warn(sb.append("There are no users assigned in the project role ").append(projectRole.getName()).append(" (no assignment will be made)").toString());
+	        	log.info(sb.append("There are no users assigned in the project role ").append(projectRole.getName()).append(" (no assignment will be made)").toString());
 	        	return;				
 			}
 		}
