@@ -7,12 +7,12 @@
   <groupId>com.innovalog.jmwe</groupId>
   <artifactId>jira-misc-workflow-extensions</artifactId>
   <name>JIRA Misc Workflow Extensions</name>
-  <version>2.5.3-beta</version>
+  <version>2.5.3</version>
   <packaging>atlassian-plugin</packaging>
 
   <scm>
-    <connection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</connection>
-    <developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/trunk/</developerConnection>
+    <connection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/tags/jmwe-2.5.3</connection>
+    <developerConnection>scm:svn:https://studio.plugins.atlassian.com/svn/JMWE/tags/jmwe-2.5.3</developerConnection>
   </scm>
 
 
@@ -26,10 +26,11 @@
       -->
     <jira.version>5.0</jira.version>
     <jira.data.version>5.0</jira.data.version>
+    <amps.version>3.11</amps.version>
   </properties>
 
   <description>Several JIRA workflow extensions</description>
-  <url></url>
+  <url />
 
   <developers>
     <developer>
@@ -53,6 +54,7 @@
       <plugin>
         <groupId>com.atlassian.maven.plugins</groupId>
         <artifactId>maven-jira-plugin</artifactId>
+        <version>${amps.version}</version>
         <extensions>true</extensions>
         <configuration>
           <productVersion>${jira.version}</productVersion>
