@@ -1,1 +1,1 @@
-If user is a member of the $selectedProjectRoleName role, set issue security level to $selectedSecurityLevelName.
+If user is a member of the $textutils.htmlEncode($selectedProjectRoleName) role, set issue security level to $textutils.htmlEncode($selectedSecurityLevelName).
