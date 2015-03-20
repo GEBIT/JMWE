@@ -4,12 +4,9 @@ import java.util.Map;
 
 import org.apache.log4j.Logger;
 
-import webwork.dispatcher.ActionResult;
-
-import com.atlassian.core.ofbiz.CoreFactory;
-import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.ComponentManager;
-import com.atlassian.jira.action.ActionNames;
+import com.atlassian.jira.event.type.EventDispatchOption;
+import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.issue.util.DefaultIssueChangeHolder;
@@ -44,7 +41,7 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 		try
 		{
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, field);
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, field, true);
 
 			// get the parent issue
 			MutableIssue parentIssue = (MutableIssue) issue.getParentObject();
@@ -55,13 +52,15 @@ public class CopyFieldValueToParentFunction extends AbstractPreserveChangesPostF
 				workflowUtils.setFieldValue(parentIssue, field, sourceValue, new DefaultIssueChangeHolder());
 
 				// trigger an edit on the issue
-				Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue,
-						"remoteUser", this.getCaller(transientVars, args));
-				actionParams.put("comment", "Copied " + field.getName() + " from sub-task " + issue.getKey());
-				actionParams.put("commentLevel", null);
-				ActionResult aResult = CoreFactory.getActionDispatcher().execute(ActionNames.ISSUE_UPDATE, actionParams);
-				if (aResult.getResult() != null && !aResult.getResult().equals("success"))
-					log.error(aResult.getResult());
+				IssueManager issueManager=(IssueManager)ComponentManager.getComponentInstanceOfType(IssueManager.class);
+				issueManager.updateIssue(this.getCaller(transientVars, args), issue, EventDispatchOption.DO_NOT_DISPATCH, false);
+//				Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue,
+//						"remoteUser", this.getCaller(transientVars, args));
+//				actionParams.put("comment", "Copied " + field.getName() + " from sub-task " + issue.getKey());
+//				actionParams.put("commentLevel", null);
+//				ActionResult aResult = CoreFactory.getActionDispatcher().execute(ActionNames.ISSUE_UPDATE, actionParams);
+//				if (aResult.getResult() != null && !aResult.getResult().equals("success"))
+//					log.error(aResult.getResult());
 				ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
 			}
 		} catch (Exception e)

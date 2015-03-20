@@ -38,7 +38,7 @@ public class SetAssigneeFromFieldFunction extends AbstractJiraFunctionProvider {
 
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom, true);
 			if (sourceValue == null) {
 				if (log.isDebugEnabled()) {
 					log.debug(String.format("Value of field [%s] is null, setting Assignee to Unassigned on issue [%s]", fieldFrom.getName(), issue.getKey()));

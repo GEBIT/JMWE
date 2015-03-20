@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.innovalog.jmwe.plugins.validators;
 
@@ -38,7 +38,7 @@ public class FieldHasSingleValueValidator extends GenericValidator {
 	protected void validate() throws InvalidInputException, WorkflowException {
 		Field field = workflowUtils.getFieldFromKey(fieldKey);
 		final Issue issue = getIssue();
-		Object value = workflowUtils.getFieldValueFromIssue(issue, field);
+		Object value = workflowUtils.getFieldValueFromIssue(issue, field, true);
 		if (value instanceof Collection && fieldCollectionsUtils.isIssueHasField(issue, field) && ((Collection)value).size() > 1)
 			if (excludingSubtasks != null && excludingSubtasks.equals("yes"))
 				//we should look at subtasks and exclude values coming from their corresponding field
@@ -50,7 +50,7 @@ public class FieldHasSingleValueValidator extends GenericValidator {
 					if (fieldCollectionsUtils.isIssueHasField((Issue)subtask, field))
 					{
 						//get value of field
-						Object subtaskValue = workflowUtils.getFieldValueFromIssue((Issue)subtask, field);
+						Object subtaskValue = workflowUtils.getFieldValueFromIssue((Issue)subtask, field, true);
 						if (subtaskValue instanceof Collection)
 							//remove values from subtask field
 							values.removeAll((Collection) subtaskValue);
@@ -61,16 +61,16 @@ public class FieldHasSingleValueValidator extends GenericValidator {
 				{
 					//report error
 					this.setExceptionMessage(
-							field, 
-							field.getName() + " should not have more than one value (excluding values copied from sub-tasks).", 
+							field,
+							field.getName() + " should not have more than one value (excluding values copied from sub-tasks).",
 							field.getName() + " should not have more than one value (excluding values copied from sub-tasks). But it is not present on screen."
 					);
 				}
 			}
 			else
 				this.setExceptionMessage(
-						field, 
-						field.getName() + " should not have more than one value.", 
+						field,
+						field.getName() + " should not have more than one value.",
 						field.getName() + " should not have more than one value. But it is not present on screen."
 				);
 	}

@@ -39,7 +39,7 @@ public class CopyFieldValueFromParentFunction extends AbstractPreserveChangesPos
 			MutableIssue parentIssue = (MutableIssue) issue.getParentObject();
 			if (parentIssue != null)
 			{
-				Object sourceValue = workflowUtils.getFieldValueFromIssue(parentIssue, field);
+				Object sourceValue = workflowUtils.getFieldValueFromIssue(parentIssue, field, true);
 				workflowUtils.setFieldValue(issue, field, sourceValue, holder);
 			}
 		} catch (Exception e)

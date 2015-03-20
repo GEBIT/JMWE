@@ -32,7 +32,7 @@ public class IncreaseFieldValueFunction extends AbstractPreserveChangesPostFunct
 		// It set the value to field.
 		try {
 			MutableIssue issue = getIssue(transientVars);
-			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, field);
+			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue, field, true);
 			if (sourceValue != null) {
 				log.debug("Current field value = ["+sourceValue+"], of class = ["+sourceValue.getClass().getName()+"]");
 				if (sourceValue instanceof Double) {

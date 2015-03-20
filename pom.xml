@@ -7,7 +7,7 @@
   <groupId>com.innovalog.jmwe</groupId>
   <artifactId>jira-misc-workflow-extensions</artifactId>
   <name>JIRA Misc Workflow Extensions</name>
-  <version>2.5.4-SNAPSHOT</version>
+  <version>2.6.0-SNAPSHOT</version>
   <packaging>atlassian-plugin</packaging>
 
   <scm>
@@ -24,8 +24,8 @@
         Change this property to compile your plugin against different JIRA
         versions.
       -->
-    <jira.version>5.0</jira.version>
-    <jira.data.version>5.0</jira.data.version>
+    <jira.version>6.0</jira.version>
+    <jira.data.version>6.0</jira.data.version>
     <amps.version>3.11</amps.version>
   </properties>
 
@@ -77,7 +77,7 @@
   <dependencies>
     <dependency>
       <groupId>com.atlassian.jira</groupId>
-      <artifactId>atlassian-jira</artifactId>
+      <artifactId>jira-core</artifactId>
       <version>${jira.version}</version>
       <scope>provided</scope>
     </dependency>
@@ -102,7 +102,11 @@
     <dependency>
       <groupId>com.innovalog</groupId>
       <artifactId>workflow_utils</artifactId>
+<<<<<<< HEAD
       <version>1.3</version>
+=======
+      <version>1.36</version>
+>>>>>>> Update dependencies
       <scope>compile</scope>
     </dependency>
   </dependencies>

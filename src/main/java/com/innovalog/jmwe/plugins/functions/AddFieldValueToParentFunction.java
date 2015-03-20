@@ -11,7 +11,8 @@ import webwork.dispatcher.ActionResult;
 import com.atlassian.core.ofbiz.CoreFactory;
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.ComponentManager;
-import com.atlassian.jira.action.ActionNames;
+import com.atlassian.jira.event.type.EventDispatchOption;
+import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.issue.fields.Field;
 import com.atlassian.jira.issue.util.DefaultIssueChangeHolder;
@@ -45,14 +46,14 @@ public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFu
 		try {
 			MutableIssue issue = getIssue(transientVars);
 			Object sourceValue = workflowUtils.getFieldValueFromIssue(issue,
-					field);
+					field, true);
 			if (sourceValue != null && sourceValue instanceof Collection) {
 				// get the parent issue
 				MutableIssue parentIssue = (MutableIssue)issue.getParentObject();
 				if (parentIssue != null)
 				{
 					//get parent issue's field value
-					Object parentValue = workflowUtils.getFieldValueFromIssue(parentIssue,field);
+					Object parentValue = workflowUtils.getFieldValueFromIssue(parentIssue,field, true);
 					if (parentValue == null)
 						parentValue = new ArrayList();
 					if (parentValue instanceof Collection)
@@ -61,14 +62,16 @@ public class AddFieldValueToParentFunction extends AbstractPreserveChangesPostFu
 							ImportUtils.setIndexIssues(true);
 						((Collection)parentValue).addAll((Collection)sourceValue);
 						workflowUtils.setFieldValue(parentIssue, field, parentValue, new DefaultIssueChangeHolder());
-						
+
 						//trigger an edit on the issue
-						Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue, "remoteUser", this.getCaller(transientVars, args));
-						actionParams.put("comment", "Added "+field.getName()+" from sub-task "+issue.getKey());
-						actionParams.put("commentLevel", null);
-						ActionResult aResult = CoreFactory.getActionDispatcher().execute(ActionNames.ISSUE_UPDATE, actionParams);
-						if (aResult.getResult() != null && !aResult.getResult().equals("success"))
-							log.error(aResult.getResult());
+						IssueManager issueManager=(IssueManager)ComponentManager.getComponentInstanceOfType(IssueManager.class);
+						issueManager.updateIssue(this.getCaller(transientVars, args), issue, EventDispatchOption.DO_NOT_DISPATCH, false);
+//						Map actionParams = EasyMap.build("issue", parentIssue.getGenericValue(), "issueObject", parentIssue, "remoteUser", this.getCaller(transientVars, args));
+//						actionParams.put("comment", "Added "+field.getName()+" from sub-task "+issue.getKey());
+//						actionParams.put("commentLevel", null);
+//						ActionResult aResult = CoreFactory.getActionDispatcher().execute(ActionNames.ISSUE_UPDATE, actionParams);
+//						if (aResult.getResult() != null && !aResult.getResult().equals("success"))
+//							log.error(aResult.getResult());
 						ComponentManager.getInstance().getIndexManager().reIndex(parentIssue);
 					}
 				}

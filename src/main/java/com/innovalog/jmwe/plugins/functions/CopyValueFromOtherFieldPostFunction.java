@@ -46,21 +46,21 @@ public class CopyValueFromOtherFieldPostFunction extends AbstractPreserveChanges
         try {
             MutableIssue issue = getIssue(transientVars);
             Object sourceValue = null;
-            
+
             if (bOldValue && issue.getModifiedFields().containsKey(fieldFromKey))
             {
 	            ModifiedValue mv = (ModifiedValue) issue.getModifiedFields().get(fieldFromKey);
 				if (mv != null)
 					sourceValue = mv.getOldValue();
 	            else
-		            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+		            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom, true);
             }
             else
-	            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom);
+	            sourceValue = workflowUtils.getFieldValueFromIssue(issue, fieldFrom, true);
 
             if (bAppendValues) {
             	//get existing destination field value
-            	Object destValue = workflowUtils.getFieldValueFromIssue(issue, fieldTo);
+            	Object destValue = workflowUtils.getFieldValueFromIssue(issue, fieldTo, true);
             	if (destValue == null)
             		destValue = Collections.EMPTY_LIST;
             	if (! (destValue instanceof Collection))
